@@ -1,0 +1,16 @@
+{
+  "hostname": "golfserver",
+  "ip": "192.168.1.2",
+  "uptime": "2 days, 3 hours, 10 minutes",
+  "cpu": "3.4%",
+  "memory": "820Mi / 14Gi",
+  "disk": "8.3G / 233G (4% used)",
+  "temperature": "+32.0°C",
+  "services": {
+    "caddy": "active",
+    "fail2ban": "active",
+    "mingolfbot": "active",
+    "beniWebsite": "active"
+  },
+  "updatedAt": "2026-07-02T14:48:01+02:00"
+}

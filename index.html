@@ -1,0 +1,1117 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BENI Platform NOC</title>
+  <style>
+    :root {
+      --bg: #090909;
+      --panel: rgba(18, 18, 20, .84);
+      --panel-strong: rgba(23, 23, 26, .94);
+      --panel-soft: rgba(255, 255, 255, .04);
+      --border: rgba(255, 255, 255, .1);
+      --border-strong: rgba(255, 255, 255, .16);
+      --text: #f7f7f8;
+      --muted: #a1a1aa;
+      --muted-2: #71717a;
+      --blue: #2563eb;
+      --blue-soft: rgba(37, 99, 235, .16);
+      --green: #22c55e;
+      --green-soft: rgba(34, 197, 94, .14);
+      --red: #ef4444;
+      --red-soft: rgba(239, 68, 68, .12);
+      --shadow: 0 24px 80px rgba(0, 0, 0, .36);
+      --radius: 22px;
+      --sidebar: 180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 48% 42%, rgba(37, 99, 235, .05), transparent 34rem),
+        radial-gradient(circle at 18% 0%, rgba(37, 99, 235, .18), transparent 28rem),
+        radial-gradient(circle at 96% 8%, rgba(34, 197, 94, .07), transparent 26rem),
+        linear-gradient(135deg, rgba(255, 255, 255, .03), transparent 30rem),
+        var(--bg);
+      letter-spacing: 0;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .024) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .024) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .62), transparent 76%);
+    }
+
+    .icon {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 2;
+    }
+
+    .shell {
+      position: relative;
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      min-height: 100vh;
+      padding: 22px;
+      gap: 22px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 22px;
+      align-self: start;
+      min-height: calc(100vh - 44px);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      padding: 18px 14px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(17, 17, 19, .94), rgba(12, 12, 13, .78));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+    }
+
+    .brand {
+      display: grid;
+      gap: 8px;
+      padding: 0 4px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 850;
+      background: linear-gradient(145deg, rgba(37, 99, 235, 1), rgba(30, 64, 175, .86));
+      box-shadow: 0 14px 38px rgba(37, 99, 235, .32);
+    }
+
+    .brand-title {
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1.25;
+    }
+
+    .nav {
+      display: grid;
+      gap: 4px;
+    }
+
+    .nav-link {
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      padding: 0 9px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      color: var(--muted);
+      background: transparent;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 650;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .nav-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, .045);
+    }
+
+    .nav-link.active {
+      color: #fff;
+      border-color: var(--border);
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .nav-link.active .icon {
+      color: #9db8ff;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 14px 4px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted-2);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .main {
+      min-width: 0;
+      display: grid;
+      align-content: start;
+      gap: 18px;
+    }
+
+    .mission-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 2px 4px;
+      scrollbar-width: none;
+    }
+
+    .mission-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mission-chip {
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+      padding: 0 11px;
+      border: 1px solid rgba(34, 197, 94, .22);
+      border-radius: 999px;
+      color: #dcffe8;
+      background: rgba(34, 197, 94, .09);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .mission-chip.degraded {
+      border-color: rgba(239, 68, 68, .24);
+      color: #ffe0e0;
+      background: var(--red-soft);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 20px rgba(34, 197, 94, .85);
+    }
+
+    .mission-chip.degraded .dot,
+    .system-pill.degraded .dot,
+    .service-dot:not(.ok) {
+      background: var(--red);
+      box-shadow: 0 0 20px rgba(239, 68, 68, .8);
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+      padding: 18px 4px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .kicker {
+      color: #fff;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    h1 {
+      margin: 8px 0 0;
+      font-size: clamp(34px, 4.6vw, 60px);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+
+    .header-subtitle {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 650;
+    }
+
+    .header-status {
+      min-width: 232px;
+      display: grid;
+      justify-items: end;
+      gap: 10px;
+    }
+
+    .system-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 38px;
+      padding: 0 13px;
+      border: 1px solid rgba(34, 197, 94, .28);
+      border-radius: 999px;
+      color: #dbffe7;
+      background: var(--green-soft);
+      box-shadow: 0 16px 46px rgba(34, 197, 94, .08);
+      font-size: 13px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .system-pill.degraded {
+      border-color: rgba(239, 68, 68, .28);
+      color: #ffe5e5;
+      background: var(--red-soft);
+    }
+
+    .updated {
+      color: var(--muted-2);
+      font-size: 12px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: grid;
+      gap: 18px;
+    }
+
+    .section {
+      display: grid;
+      gap: 14px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 4px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: 0;
+    }
+
+    .section-meta {
+      color: var(--muted-2);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .metric-card,
+    .service-card,
+    .server-panel,
+    .actions-card,
+    .coming-soon {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .025)),
+        var(--panel);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, .28);
+      backdrop-filter: blur(18px);
+    }
+
+    .metric-card {
+      grid-column: span 4;
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 23px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -38px -64px auto;
+      width: 138px;
+      height: 138px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, .14);
+      filter: blur(24px);
+      pointer-events: none;
+    }
+
+    .metric-card.compact {
+      grid-column: span 3;
+    }
+
+    .metric-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .metric-label,
+    .detail-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .metric-icon {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      color: #dbe7ff;
+      background: rgba(37, 99, 235, .12);
+    }
+
+    .metric-value {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      font-size: clamp(34px, 4vw, 48px);
+      line-height: 1;
+      font-weight: 850;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-card.compact .metric-value {
+      font-size: clamp(27px, 3.1vw, 38px);
+    }
+
+    .metric-note {
+      margin-top: 9px;
+      color: var(--muted-2);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .progress {
+      position: relative;
+      z-index: 1;
+      height: 10px;
+      margin-top: 22px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .08);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .04);
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #93c5fd, var(--blue));
+      box-shadow: 0 0 24px rgba(37, 99, 235, .55);
+      transition: width .5s ease;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .service-card {
+      min-height: 126px;
+      padding: 20px;
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-strong);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .032)),
+        var(--panel-strong);
+    }
+
+    .service-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .service-dot {
+      width: 10px;
+      height: 10px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: var(--red);
+      box-shadow: 0 0 20px rgba(239, 68, 68, .75);
+    }
+
+    .service-dot.ok {
+      background: var(--green);
+      box-shadow: 0 0 20px rgba(34, 197, 94, .8);
+    }
+
+    .service-name {
+      min-width: 0;
+      font-size: 15px;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .service-status {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .service-status.ok {
+      color: #d9ffe5;
+    }
+
+    .server-panel {
+      display: grid;
+      padding: 2px 22px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .028)),
+        var(--panel-strong);
+    }
+
+    .server-detail {
+      min-height: 86px;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+      min-width: 0;
+    }
+
+    .server-detail:last-child {
+      border-bottom: 0;
+    }
+
+    .detail-value {
+      font-size: 18px;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .actions-card {
+      padding: 20px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .action-button {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, .035);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: not-allowed;
+      opacity: .58;
+    }
+
+    .coming-soon {
+      min-height: 420px;
+      display: grid;
+      place-items: center;
+      padding: 36px;
+      text-align: center;
+    }
+
+    .coming-soon-inner {
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+      max-width: 520px;
+    }
+
+    .coming-icon {
+      width: 52px;
+      height: 52px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      color: #dbe7ff;
+      background: var(--blue-soft);
+    }
+
+    .coming-title {
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1;
+      font-weight: 850;
+    }
+
+    .coming-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .is-hidden {
+      display: none;
+    }
+
+    @media (max-width: 1180px) {
+      .metric-card,
+      .metric-card.compact {
+        grid-column: span 6;
+      }
+
+      .services-grid,
+      .actions-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 820px) {
+      .shell {
+        display: flex;
+        flex-direction: column;
+        padding: 16px;
+        gap: 16px;
+      }
+
+      .sidebar {
+        position: static;
+        min-height: 0;
+        gap: 14px;
+        padding: 14px;
+        border-radius: 22px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        padding-bottom: 12px;
+      }
+
+      .nav {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+      }
+
+      .nav::-webkit-scrollbar {
+        display: none;
+      }
+
+      .nav-link {
+        flex: 0 0 auto;
+        min-height: 38px;
+        white-space: nowrap;
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+
+      .page-header {
+        flex-direction: column;
+        padding-top: 10px;
+      }
+
+      .header-status {
+        width: 100%;
+        min-width: 0;
+        justify-items: start;
+      }
+
+      .updated {
+        text-align: left;
+        white-space: normal;
+      }
+
+      .metric-card,
+      .metric-card.compact {
+        grid-column: span 12;
+      }
+
+      .services-grid,
+      .actions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      h1 {
+        font-size: 34px;
+      }
+
+      .metric-card,
+      .service-card,
+      .server-panel,
+      .actions-card {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <svg aria-hidden="true" width="0" height="0" style="position:absolute">
+    <symbol id="icon-home" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></symbol>
+    <symbol id="icon-server" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 8h.01M7 17h.01"/></symbol>
+    <symbol id="icon-golf" viewBox="0 0 24 24"><path d="M8 21V4"/><path d="M8 4h8l-2 3 2 3H8"/><path d="M5 21h6"/><circle cx="17" cy="19" r="2"/></symbol>
+    <symbol id="icon-chart" viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 15 4-4 3 3 5-7"/></symbol>
+    <symbol id="icon-logs" viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h6"/></symbol>
+    <symbol id="icon-rocket" viewBox="0 0 24 24"><path d="M5 15c-1 1-2 4-2 4s3-1 4-2"/><path d="M9 15 5 11l4-4c4-4 9-4 11-3 1 2 1 7-3 11l-4 4z"/><path d="M15 9h.01"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.04.04a2.1 2.1 0 0 1-3 3l-.04-.04a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.08 1.64V21a2.1 2.1 0 0 1-4.2 0v-.06A1.8 1.8 0 0 0 8.4 19.3a1.8 1.8 0 0 0-2 .36l-.04.04a2.1 2.1 0 0 1-3-3l.04-.04a1.8 1.8 0 0 0 .36-2A1.8 1.8 0 0 0 2.1 13H2a2.1 2.1 0 0 1 0-4.2h.06A1.8 1.8 0 0 0 3.7 7.72a1.8 1.8 0 0 0-.36-2l-.04-.04a2.1 2.1 0 0 1 3-3l.04.04a1.8 1.8 0 0 0 2 .36A1.8 1.8 0 0 0 9.4 1.44V1a2.1 2.1 0 0 1 4.2 0v.06a1.8 1.8 0 0 0 1.08 1.64 1.8 1.8 0 0 0 2-.36l.04-.04a2.1 2.1 0 0 1 3 3l-.04.04a1.8 1.8 0 0 0-.36 2A1.8 1.8 0 0 0 20.96 8H21a2.1 2.1 0 0 1 0 4.2h-.06A1.8 1.8 0 0 0 19.4 15Z"/></symbol>
+    <symbol id="icon-cpu" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M4 10h3M4 14h3M17 10h3M17 14h3M10 4v3M14 4v3M10 17v3M14 17v3"/></symbol>
+    <symbol id="icon-memory" viewBox="0 0 24 24"><path d="M6 9h12v9H6z"/><path d="M8 6h8v3H8z"/><path d="M8 21v-3M12 21v-3M16 21v-3"/></symbol>
+    <symbol id="icon-disk" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></symbol>
+    <symbol id="icon-temp" viewBox="0 0 24 24"><path d="M14 14.8V5a4 4 0 0 0-8 0v9.8a6 6 0 1 0 8 0Z"/><path d="M10 6v9"/></symbol>
+    <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  </svg>
+
+  <div class="shell">
+    <aside class="sidebar" aria-label="Huvudmeny">
+      <div class="brand">
+        <div class="brand-mark">BP</div>
+        <div class="brand-title">BENI PLATFORM</div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-link active" type="button" data-page-target="dashboard"><svg class="icon"><use href="#icon-home"></use></svg>Dashboard</button>
+        <button class="nav-link" type="button" data-page-target="infrastructure"><svg class="icon"><use href="#icon-server"></use></svg>Infrastructure</button>
+        <button class="nav-link" type="button" data-page-target="golfbot"><svg class="icon"><use href="#icon-golf"></use></svg>GolfBot</button>
+        <button class="nav-link" type="button" data-page-target="statistics"><svg class="icon"><use href="#icon-chart"></use></svg>Statistics</button>
+        <button class="nav-link" type="button" data-page-target="logs"><svg class="icon"><use href="#icon-logs"></use></svg>Logs</button>
+        <button class="nav-link" type="button" data-page-target="deploy"><svg class="icon"><use href="#icon-rocket"></use></svg>Deploy</button>
+        <button class="nav-link" type="button" data-page-target="settings"><svg class="icon"><use href="#icon-settings"></use></svg>Settings</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        Sprint 1<br />
+        Live telemetry.
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="mission-bar" aria-label="Statusrad">
+        <div class="mission-chip" id="services-count-chip"><span class="dot"></span><span id="services-count">0 services online</span></div>
+        <div class="mission-chip"><span class="dot"></span>HTTPS</div>
+        <div class="mission-chip"><span class="dot"></span>DNS</div>
+        <div class="mission-chip"><span class="dot"></span>Certifikat</div>
+        <div class="mission-chip"><span class="dot"></span>Git synced</div>
+      </div>
+
+      <header class="page-header">
+        <div>
+          <div class="kicker">BENI PLATFORM</div>
+          <h1 id="page-title">Network Operations Center</h1>
+          <div class="header-subtitle" id="page-subtitle">Infrastructure Dashboard</div>
+        </div>
+
+        <div class="header-status">
+          <div class="system-pill" id="system-status">
+            <span class="dot"></span>
+            <span id="system-status-text">Kontrollerar system</span>
+          </div>
+          <div class="updated" id="updated">Senast uppdaterad -</div>
+        </div>
+      </header>
+
+      <section class="page active" id="page-dashboard" data-title="Network Operations Center" data-subtitle="Infrastructure Dashboard">
+        <section class="section" aria-labelledby="dashboard-title">
+          <div class="section-heading">
+            <h2 id="dashboard-title">Dashboard</h2>
+            <div class="section-meta">Core metrics</div>
+          </div>
+
+          <div class="metrics-grid">
+            <article class="metric-card">
+              <div>
+                <div class="metric-top">
+                  <div class="metric-label">CPU Usage</div>
+                  <div class="metric-icon"><svg class="icon"><use href="#icon-cpu"></use></svg></div>
+                </div>
+                <div class="metric-value" id="cpu">-</div>
+              </div>
+              <div class="progress" aria-label="CPU-användning">
+                <div class="progress-fill" id="cpu-progress"></div>
+              </div>
+            </article>
+
+            <article class="metric-card">
+              <div>
+                <div class="metric-top">
+                  <div class="metric-label">RAM Usage</div>
+                  <div class="metric-icon"><svg class="icon"><use href="#icon-memory"></use></svg></div>
+                </div>
+                <div class="metric-value" id="memory">-</div>
+              </div>
+              <div class="progress" aria-label="RAM-användning">
+                <div class="progress-fill" id="memory-progress"></div>
+              </div>
+            </article>
+
+            <article class="metric-card">
+              <div>
+                <div class="metric-top">
+                  <div class="metric-label">Disk Usage</div>
+                  <div class="metric-icon"><svg class="icon"><use href="#icon-disk"></use></svg></div>
+                </div>
+                <div class="metric-value" id="disk">-</div>
+              </div>
+              <div class="progress" aria-label="Diskanvändning">
+                <div class="progress-fill" id="disk-progress"></div>
+              </div>
+            </article>
+
+            <article class="metric-card compact">
+              <div>
+                <div class="metric-top">
+                  <div class="metric-label">Temperature</div>
+                  <div class="metric-icon"><svg class="icon"><use href="#icon-temp"></use></svg></div>
+                </div>
+                <div class="metric-value" id="temperature">-</div>
+                <div class="metric-note">Thermal sensor</div>
+              </div>
+            </article>
+
+            <article class="metric-card compact">
+              <div>
+                <div class="metric-top">
+                  <div class="metric-label">Uptime</div>
+                  <div class="metric-icon"><svg class="icon"><use href="#icon-clock"></use></svg></div>
+                </div>
+                <div class="metric-value" id="uptime">-</div>
+                <div class="metric-note">Current boot session</div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="services-title">
+          <div class="section-heading">
+            <h2 id="services-title">Services</h2>
+            <div class="section-meta">Runtime status</div>
+          </div>
+
+          <div class="services-grid">
+            <article class="service-card">
+              <div class="service-top">
+                <span id="caddy-dot" class="service-dot"></span>
+                <div class="service-name">Caddy</div>
+              </div>
+              <div id="caddy" class="service-status">-</div>
+            </article>
+
+            <article class="service-card">
+              <div class="service-top">
+                <span id="website-dot" class="service-dot"></span>
+                <div class="service-name">BENI Website</div>
+              </div>
+              <div id="website" class="service-status">-</div>
+            </article>
+
+            <article class="service-card">
+              <div class="service-top">
+                <span id="bot-dot" class="service-dot"></span>
+                <div class="service-name">MinGolfBot</div>
+              </div>
+              <div id="bot" class="service-status">-</div>
+            </article>
+
+            <article class="service-card">
+              <div class="service-top">
+                <span id="fail2ban-dot" class="service-dot"></span>
+                <div class="service-name">Fail2Ban</div>
+              </div>
+              <div id="fail2ban" class="service-status">-</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="server-title">
+          <div class="section-heading">
+            <h2 id="server-title">Server</h2>
+            <div class="section-meta">Host details</div>
+          </div>
+
+          <div class="server-panel">
+            <div class="server-detail">
+              <div class="detail-label">Hostname</div>
+              <div class="detail-value" id="hostname">-</div>
+            </div>
+            <div class="server-detail">
+              <div class="detail-label">Lokal IP</div>
+              <div class="detail-value" id="local-ip">-</div>
+            </div>
+            <div class="server-detail is-hidden" id="public-ip-card">
+              <div class="detail-label">Publik IP</div>
+              <div class="detail-value" id="public-ip">-</div>
+            </div>
+            <div class="server-detail">
+              <div class="detail-label">Ubuntu</div>
+              <div class="detail-value" id="os-version">26.04</div>
+            </div>
+            <div class="server-detail">
+              <div class="detail-label">Uptime</div>
+              <div class="detail-value" id="server-uptime">-</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="actions-title">
+          <div class="actions-card">
+            <div class="section-heading">
+              <h2 id="actions-title">Quick Actions</h2>
+              <div class="section-meta">Disabled</div>
+            </div>
+            <div class="actions-grid">
+              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-rocket"></use></svg>Restart GolfBot</button>
+              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-server"></use></svg>Restart Website</button>
+              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-rocket"></use></svg>Deploy Website</button>
+              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-logs"></use></svg>View Logs</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="page" id="page-infrastructure" data-title="Infrastructure" data-subtitle="Coming soon">
+        <div class="coming-soon"><div class="coming-soon-inner"><div class="coming-icon"><svg class="icon"><use href="#icon-server"></use></svg></div><div class="coming-title">Infrastructure</div><p class="coming-copy">Coming soon.</p></div></div>
+      </section>
+      <section class="page" id="page-golfbot" data-title="GolfBot" data-subtitle="Coming soon">
+        <div class="coming-soon"><div class="coming-soon-inner"><div class="coming-icon"><svg class="icon"><use href="#icon-golf"></use></svg></div><div class="coming-title">GolfBot</div><p class="coming-copy">Coming soon.</p></div></div>
+      </section>
+      <section class="page" id="page-statistics" data-title="Statistics" data-subtitle="Coming soon">
+        <div class="coming-soon"><div class="coming-soon-inner"><div class="coming-icon"><svg class="icon"><use href="#icon-chart"></use></svg></div><div class="coming-title">Statistics</div><p class="coming-copy">Coming soon.</p></div></div>
+      </section>
+      <section class="page" id="page-logs" data-title="Logs" data-subtitle="Coming soon">
+        <div class="coming-soon"><div class="coming-soon-inner"><div class="coming-icon"><svg class="icon"><use href="#icon-logs"></use></svg></div><div class="coming-title">Logs</div><p class="coming-copy">Coming soon.</p></div></div>
+      </section>
+      <section class="page" id="page-deploy" data-title="Deploy" data-subtitle="Coming soon">
+        <div class="coming-soon"><div class="coming-soon-inner"><div class="coming-icon"><svg class="icon"><use href="#icon-rocket"></use></svg></div><div class="coming-title">Deploy</div><p class="coming-copy">Coming soon.</p></div></div>
+      </section>
+      <section class="page" id="page-settings" data-title="Settings" data-subtitle="Coming soon">
+        <div class="coming-soon"><div class="coming-soon-inner"><div class="coming-icon"><svg class="icon"><use href="#icon-settings"></use></svg></div><div class="coming-title">Settings</div><p class="coming-copy">Coming soon.</p></div></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const SERVICE_MAP = [
+      { id: "caddy", key: "caddy" },
+      { id: "website", key: "beniWebsite" },
+      { id: "bot", key: "mingolfbot" },
+      { id: "fail2ban", key: "fail2ban" }
+    ];
+
+    const elements = {
+      pageTitle: document.getElementById("page-title"),
+      pageSubtitle: document.getElementById("page-subtitle"),
+      systemStatus: document.getElementById("system-status"),
+      systemStatusText: document.getElementById("system-status-text"),
+      servicesCountChip: document.getElementById("services-count-chip"),
+      publicIpCard: document.getElementById("public-ip-card")
+    };
+
+    const setText = (id, value) => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.textContent = value || "-";
+      }
+    };
+
+    const setProgress = (id, value) => {
+      const element = document.getElementById(id);
+      if (!element) return;
+      const percent = Math.max(0, Math.min(100, Number(value) || 0));
+      element.style.width = `${percent}%`;
+    };
+
+    const parsePercent = (value) => {
+      const match = String(value || "").match(/(\d+(?:[.,]\d+)?)\s*%/);
+      return match ? Number(match[1].replace(",", ".")) : 0;
+    };
+
+    const parseStorageValue = (value) => {
+      const match = String(value || "").match(/([\d.,]+)\s*([KMGTPE]?i?B?|[kmgtpe]?)(?:\s*)/);
+      if (!match) return 0;
+
+      const amount = Number(match[1].replace(",", "."));
+      const unit = match[2].toUpperCase().replace("IB", "").replace("B", "").replace("I", "");
+      const scale = { K: 1, M: 2, G: 3, T: 4, P: 5, E: 6 }[unit] || 0;
+
+      return amount * Math.pow(1024, scale);
+    };
+
+    const parseUsageRatio = (value) => {
+      const explicitPercent = parsePercent(value);
+      if (explicitPercent) return explicitPercent;
+
+      const [used, total] = String(value || "").split("/").map(parseStorageValue);
+      return used && total ? (used / total) * 100 : 0;
+    };
+
+    const formatPercentValue = (value) => {
+      const percent = parsePercent(value);
+      return percent ? `${percent.toLocaleString("sv-SE")} %` : value;
+    };
+
+    const setService = (id, value) => {
+      const isOk = value === "active";
+      const status = document.getElementById(id);
+      const dot = document.getElementById(`${id}-dot`);
+
+      if (status) {
+        status.textContent = isOk ? "Online" : "Offline";
+        status.classList.toggle("ok", isOk);
+      }
+
+      if (dot) {
+        dot.classList.toggle("ok", isOk);
+      }
+
+      return isOk;
+    };
+
+    const setSystemStatus = (onlineCount) => {
+      const allOnline = onlineCount === SERVICE_MAP.length;
+
+      elements.systemStatus.classList.toggle("degraded", !allOnline);
+      elements.servicesCountChip.classList.toggle("degraded", !allOnline);
+      elements.systemStatusText.textContent = allOnline ? "Alla system online" : "Åtgärd krävs";
+      setText("services-count", `${onlineCount} services online`);
+    };
+
+    const getPublicIp = (data) => {
+      return data.publicIp || data.publicIP || data.public_ip || "";
+    };
+
+    const getOsVersion = (data) => {
+      return data.osVersion || data.os || "26.04";
+    };
+
+    const renderStatus = (data) => {
+      setText("hostname", data.hostname);
+      setText("local-ip", data.ip);
+      setText("uptime", data.uptime);
+      setText("server-uptime", data.uptime);
+      setText("temperature", data.temperature);
+      setText("cpu", formatPercentValue(data.cpu));
+      setText("memory", data.memory);
+      setText("disk", data.disk);
+      setText("os-version", getOsVersion(data));
+
+      setProgress("cpu-progress", parsePercent(data.cpu));
+      setProgress("memory-progress", parseUsageRatio(data.memory));
+      setProgress("disk-progress", parseUsageRatio(data.disk));
+
+      const publicIp = getPublicIp(data);
+      elements.publicIpCard.classList.toggle("is-hidden", !publicIp);
+      setText("public-ip", publicIp);
+
+      const services = data.services || {};
+      const onlineCount = SERVICE_MAP.reduce((count, service) => {
+        return count + (setService(service.id, services[service.key]) ? 1 : 0);
+      }, 0);
+      setSystemStatus(onlineCount);
+
+      const updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
+      setText("updated", `Senast uppdaterad ${updatedAt.toLocaleString("sv-SE")}`);
+    };
+
+    const setPage = (pageId) => {
+      const page = document.getElementById(`page-${pageId}`);
+      if (!page) return;
+
+      document.querySelectorAll("[data-page-target]").forEach((link) => {
+        link.classList.toggle("active", link.dataset.pageTarget === pageId);
+      });
+
+      document.querySelectorAll(".page").forEach((item) => {
+        item.classList.toggle("active", item === page);
+      });
+
+      elements.pageTitle.textContent = page.dataset.title || "BENI Platform";
+      elements.pageSubtitle.textContent = page.dataset.subtitle || "";
+    };
+
+    async function loadStatus() {
+      try {
+        const response = await fetch("/api/status.json", { cache: "no-store" });
+        const data = await response.json();
+        renderStatus(data);
+      } catch (error) {
+        setSystemStatus(0);
+        setText("updated", "Senast uppdaterad -");
+      }
+    }
+
+    document.querySelectorAll("[data-page-target]").forEach((link) => {
+      link.addEventListener("click", () => setPage(link.dataset.pageTarget));
+    });
+
+    loadStatus();
+    setInterval(loadStatus, 30000);
+  </script>
+</body>
+</html>
