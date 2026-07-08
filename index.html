@@ -609,6 +609,43 @@
       line-height: 1.55;
     }
 
+    .health-summary {
+      display: grid;
+      gap: 8px;
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .health-summary li {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .health-summary li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 18px rgba(34, 197, 94, .65);
+    }
+
+    .health-summary li.warning::before {
+      background: var(--yellow);
+      box-shadow: 0 0 18px rgba(234, 179, 8, .6);
+    }
+
+    .health-summary li.critical::before {
+      background: var(--red);
+      box-shadow: 0 0 18px rgba(239, 68, 68, .7);
+    }
+
     .alerts-list {
       display: grid;
       gap: 12px;
@@ -657,6 +694,12 @@
       gap: 16px;
     }
 
+    .deployments-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
     .link-card {
       min-height: 150px;
       display: grid;
@@ -691,6 +734,30 @@
       font-size: 13px;
       font-weight: 750;
       line-height: 1.5;
+    }
+
+    .deployment-card {
+      min-height: 148px;
+      display: grid;
+      align-content: space-between;
+      gap: 16px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .025)),
+        var(--panel);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, .28);
+      backdrop-filter: blur(18px);
+    }
+
+    .deployment-meta {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+      overflow-wrap: anywhere;
     }
 
     .bot-status-card {
@@ -1092,6 +1159,10 @@
       .quick-links-grid {
         grid-template-columns: 1fr;
       }
+
+      .deployments-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 520px) {
@@ -1201,6 +1272,7 @@
               <div>
                 <div class="attention-value" id="dashboard-overall-status">Checking</div>
                 <div class="attention-note" id="dashboard-overall-note">Waiting for live telemetry.</div>
+                <ul class="health-summary" id="dashboard-health-summary"></ul>
               </div>
             </article>
 
@@ -1229,6 +1301,33 @@
               <div class="section-meta">Latest 5 log entries</div>
             </div>
             <div class="feed-list" id="dashboard-golfbot-activity"></div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="deployments-title">
+          <div class="section-heading">
+            <h2 id="deployments-title">Latest Deployments</h2>
+            <div class="section-meta">Repository metadata</div>
+          </div>
+
+          <div class="deployments-grid">
+            <article class="deployment-card">
+              <div class="link-title"><svg class="icon"><use href="#icon-logs"></use></svg>Website Repository</div>
+              <div class="deployment-meta">
+                <span id="dashboard-website-branch">branch unknown</span>
+                <span id="dashboard-website-commit">commit unknown</span>
+                <span id="dashboard-website-updated">updated unknown</span>
+              </div>
+            </article>
+
+            <article class="deployment-card">
+              <div class="link-title"><svg class="icon"><use href="#icon-logs"></use></svg>Status Repository</div>
+              <div class="deployment-meta">
+                <span id="dashboard-status-branch">branch unknown</span>
+                <span id="dashboard-status-commit">commit unknown</span>
+                <span id="dashboard-status-updated">updated unknown</span>
+              </div>
+            </article>
           </div>
         </section>
 
@@ -1439,7 +1538,13 @@
     const appState = {
       currentPage: "dashboard",
       platformStatus: { text: "Checking systems", tone: "unknown" },
-      golfBotStatus: { text: "Unknown", tone: "unknown" }
+      golfBotStatus: { text: "Unknown", tone: "unknown" },
+      dashboard: {
+        activeServices: 0,
+        totalServices: SERVICE_MAP.length,
+        websiteOnline: false,
+        alerts: []
+      }
     };
 
     const pulse = (element) => {
@@ -1597,6 +1702,10 @@
       return value && value !== "unknown" ? formatUpdated(value) : "updated unknown";
     };
 
+    const hasGitMetadata = (git) => {
+      return Boolean(git && git.branch && git.commit && git.branch !== "unknown" && git.commit !== "unknown");
+    };
+
     const normalizeCertificateStatus = (value) => {
       const status = String(value || "unknown").toLowerCase();
       if (status === "valid") return { label: "Valid", tone: "online" };
@@ -1645,6 +1754,9 @@
 
     const buildDashboardAlerts = (data) => {
       const services = data.services || {};
+      const websiteGit = data.websiteGit || {};
+      const statusGit = data.statusGit || {};
+      const certificates = data.certificates || {};
       const alerts = SERVICE_MAP
         .filter((service) => services[service.key] && services[service.key] !== "active")
         .map((service) => ({
@@ -1671,23 +1783,80 @@
         });
       }
 
+      if (!hasGitMetadata(websiteGit)) {
+        alerts.push({
+          severity: "warning",
+          title: "Website Git metadata missing",
+          copy: "Branch or commit metadata is unknown."
+        });
+      }
+
+      if (!hasGitMetadata(statusGit)) {
+        alerts.push({
+          severity: "warning",
+          title: "Status Git metadata missing",
+          copy: "Branch or commit metadata is unknown."
+        });
+      }
+
+      ["beniconsulting.se", "status.beniconsulting.se", "golf.beniconsulting.se"].forEach((domain) => {
+        const value = certificates[domain];
+        const certificate = normalizeCertificateStatus(value);
+        if (certificate.tone !== "online") {
+          alerts.push({
+            severity: certificate.tone === "degraded" ? "critical" : "warning",
+            title: `${domain} certificate ${certificate.label.toLowerCase()}`,
+            copy: "Certificate status should be reviewed."
+          });
+        }
+      });
+
       return alerts;
+    };
+
+    const renderDashboardHealthSummary = () => {
+      const golfBotRunning = appState.golfBotStatus.text === "GolfBot Online";
+      const noOpenAlerts = appState.dashboard.alerts.length === 0;
+      const healthItems = [
+        {
+          text: `${appState.dashboard.activeServices} services online`,
+          tone: appState.dashboard.activeServices === appState.dashboard.totalServices ? "online" : "critical"
+        },
+        {
+          text: golfBotRunning ? "GolfBot running" : "GolfBot needs attention",
+          tone: golfBotRunning ? "online" : "critical"
+        },
+        {
+          text: appState.dashboard.websiteOnline ? "Website online" : "Website needs attention",
+          tone: appState.dashboard.websiteOnline ? "online" : "critical"
+        },
+        {
+          text: noOpenAlerts ? "No open alerts" : `${appState.dashboard.alerts.length} open alerts`,
+          tone: noOpenAlerts ? "online" : "warning"
+        }
+      ];
+
+      document.getElementById("dashboard-health-summary").innerHTML = healthItems
+        .map((item) => `<li class="${item.tone === "online" ? "" : item.tone}">${escapeHtml(item.text)}</li>`)
+        .join("");
     };
 
     const renderDashboardAlerts = (alerts) => {
       const criticalCount = alerts.filter((alert) => alert.severity === "critical").length;
       const warningCount = alerts.filter((alert) => alert.severity === "warning").length;
 
+      appState.dashboard.alerts = alerts;
       setText("dashboard-alert-count", String(alerts.length));
-      setText("dashboard-overall-status", criticalCount ? "Attention needed" : warningCount ? "Warnings active" : "All clear");
+      setText("dashboard-overall-status", criticalCount ? "Action Required" : warningCount ? "Review Warnings" : "Platform Healthy");
       setText("dashboard-overall-note", criticalCount
         ? `${criticalCount} critical alert${criticalCount === 1 ? "" : "s"} needs attention.`
         : warningCount
           ? `${warningCount} warning${warningCount === 1 ? "" : "s"} should be reviewed.`
-          : "No critical or warning signals detected.");
+          : "All key signals are healthy.");
       setText("dashboard-alert-summary", alerts.length
         ? `${criticalCount} critical, ${warningCount} warning`
-        : "No alerts detected.");
+        : "No open alerts.");
+      renderDashboardHealthSummary();
 
       if (!alerts.length) {
         elements.dashboardAlerts.innerHTML = `
@@ -1717,6 +1886,16 @@
 
     const renderDashboardGolfBotActivity = (logs) => {
       const latestLogs = logs.slice(0, 5);
+      const getActivityIcon = (line) => {
+        const message = String(line).toLowerCase();
+        if (message.includes("telegram")) return "📲";
+        if (message.includes("no match") || message.includes("no matching")) return "📭";
+        if (message.includes("match") || message.includes("found")) return "✅";
+        if (message.includes("started") || message.includes("active")) return "🟢";
+        if (message.includes("search") || message.includes("running scheduled search")) return "🔍";
+        return "•";
+      };
+
       if (!latestLogs.length) {
         elements.dashboardGolfBotActivity.innerHTML = `
           <div class="feed-item">
@@ -1729,7 +1908,7 @@
 
       elements.dashboardGolfBotActivity.innerHTML = latestLogs.map((line) => `
         <div class="feed-item">
-          <div class="feed-title"><span class="dot"></span>${escapeHtml(line)}</div>
+          <div class="feed-title"><span>${getActivityIcon(line)}</span>${escapeHtml(line)}</div>
           <div class="feed-time">GolfBot</div>
         </div>
       `).join("");
@@ -1848,6 +2027,8 @@
         return count + (setService(service.id, services[service.key]) ? 1 : 0);
       }, 0);
 
+      appState.dashboard.activeServices = onlineCount;
+      appState.dashboard.websiteOnline = services.beniWebsite === "active";
       setSystemStatus(onlineCount);
       renderDashboardAlerts(buildDashboardAlerts(data));
       setAppStatus("website", services.beniWebsite === "active" ? "Online" : "Offline");
@@ -1879,6 +2060,12 @@
         .every((value) => value && value !== "unknown");
       setTone(elements.gitChip, gitKnown ? "online" : "unknown");
       setText("git-summary", gitKnown ? "Git metadata synced" : "Git metadata unknown");
+      setText("dashboard-website-branch", `branch ${getValue(websiteGit.branch)}`);
+      setText("dashboard-website-commit", `commit ${getValue(websiteGit.commit)}`);
+      setText("dashboard-website-updated", formatGitUpdated(websiteGit.updated));
+      setText("dashboard-status-branch", `branch ${getValue(statusGit.branch)}`);
+      setText("dashboard-status-commit", `commit ${getValue(statusGit.commit)}`);
+      setText("dashboard-status-updated", formatGitUpdated(statusGit.updated));
     };
 
     const setGolfBotAvailable = (isAvailable) => {
@@ -1941,6 +2128,7 @@
       setGolfBotAvailable(true);
       appState.golfBotStatus = { text: `GolfBot ${status.label}`, tone: status.tone };
       updateHeaderStatus();
+      renderDashboardHealthSummary();
       setTone(elements.golfBotStatusPill, status.tone);
       elements.golfBotStatusText.textContent = status.label;
       setText("golfbot-status-meta", status.label === "Online" ? "Bot is monitoring tee times" : "Bot is not currently monitoring");
@@ -1968,6 +2156,7 @@
       setGolfBotAvailable(false);
       appState.golfBotStatus = { text: "GolfBot unavailable", tone: "unknown" };
       updateHeaderStatus();
+      renderDashboardHealthSummary();
       setTone(elements.golfBotStatusPill, "unknown");
       elements.golfBotStatusText.textContent = "Unknown";
       setText("golfbot-status-meta", "GolfBot data unavailable");
