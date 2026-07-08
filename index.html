@@ -574,6 +574,164 @@
       padding: 20px;
     }
 
+    .bot-status-card {
+      padding: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(37, 99, 235, .12), rgba(255, 255, 255, .025)),
+        var(--panel);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, .28);
+      backdrop-filter: blur(18px);
+    }
+
+    .bot-status-copy {
+      display: grid;
+      gap: 7px;
+    }
+
+    .bot-status-title {
+      font-size: 18px;
+      font-weight: 850;
+    }
+
+    .bot-status-meta {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .watch-card {
+      grid-column: span 6;
+      min-height: 190px;
+      padding: 22px;
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .025)),
+        var(--panel);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, .28);
+      backdrop-filter: blur(18px);
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .watch-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-strong);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .032)),
+        var(--panel-strong);
+    }
+
+    .watch-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .watch-title {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .watch-club {
+      font-size: clamp(18px, 2vw, 24px);
+      line-height: 1.05;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .watch-course {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .watch-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .watch-meta-item {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .watch-label {
+      color: var(--muted-2);
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .watch-value {
+      color: #f4f4f5;
+      font-size: 13px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .logs-panel {
+      min-height: 210px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(37, 99, 235, .065), rgba(0, 0, 0, .18)),
+        rgba(5, 5, 6, .86);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .025), 0 18px 60px rgba(0, 0, 0, .28);
+      overflow: auto;
+    }
+
+    .log-line {
+      margin: 0;
+      color: #dbeafe;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .log-prompt {
+      color: #60a5fa;
+      user-select: none;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      min-height: 220px;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .022)),
+        var(--panel);
+      text-align: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .is-hidden {
+      display: none;
+    }
+
     .feed-list {
       display: grid;
       gap: 0;
@@ -717,7 +875,8 @@
       .overview-card,
       .metric-card,
       .service-card,
-      .app-card {
+      .app-card,
+      .watch-card {
         grid-column: span 6;
       }
 
@@ -793,10 +952,17 @@
       .metric-card,
       .service-card,
       .app-card,
+      .watch-card,
       .server-panel,
       .actions-card,
       .activity-card {
         grid-column: span 12;
+      }
+
+      .bot-status-card,
+      .watch-top {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
       .actions-grid {
@@ -813,6 +979,7 @@
       .metric-card,
       .service-card,
       .app-card,
+      .watch-card,
       .server-panel,
       .actions-card,
       .activity-card {
@@ -1149,8 +1316,68 @@
         </section>
       </section>
 
-      <section class="page" id="page-golfbot" data-title="GolfBot" data-subtitle="Coming soon">
-        <div class="coming-soon"><div class="coming-soon-inner"><div class="coming-icon"><svg class="icon"><use href="#icon-golf"></use></svg></div><div class="coming-title">GolfBot</div><p class="coming-copy">Coming soon.</p></div></div>
+      <section class="page" id="page-golfbot" data-title="GolfBot" data-subtitle="Tee time monitoring dashboard">
+        <section class="section" aria-labelledby="golfbot-status-title">
+          <div class="bot-status-card">
+            <div class="bot-status-copy">
+              <div class="bot-status-title" id="golfbot-status-title">GolfBot Runtime</div>
+              <div class="bot-status-meta" id="golfbot-status-meta">Waiting for telemetry</div>
+            </div>
+            <div class="status-pill unknown" id="golfbot-status-pill"><span class="dot"></span><span id="golfbot-status-text">Unknown</span></div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="golfbot-overview-title" data-golfbot-section>
+          <div class="section-heading">
+            <h2 id="golfbot-overview-title">Overview</h2>
+            <div class="section-meta">Live bot state</div>
+          </div>
+
+          <div class="overview-grid">
+            <article class="overview-card"><div class="overview-label">Bot Status</div><div class="overview-value" id="golfbot-overview-status">-</div></article>
+            <article class="overview-card"><div class="overview-label">Active Watches</div><div class="overview-value" id="golfbot-active-watches">-</div></article>
+            <article class="overview-card"><div class="overview-label">Search Interval</div><div class="overview-value" id="golfbot-search-interval">-</div></article>
+            <article class="overview-card"><div class="overview-label">Last Search</div><div class="overview-value" id="golfbot-last-search">-</div></article>
+            <article class="overview-card"><div class="overview-label">Next Search</div><div class="overview-value" id="golfbot-next-search">-</div></article>
+            <article class="overview-card"><div class="overview-label">Telegram Status</div><div class="overview-value" id="golfbot-telegram-status">-</div></article>
+            <article class="overview-card"><div class="overview-label">Matches Today</div><div class="overview-value" id="golfbot-matches-today">-</div></article>
+            <article class="overview-card"><div class="overview-label">Notifications Today</div><div class="overview-value" id="golfbot-notifications-today">-</div></article>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="golfbot-watches-title" data-golfbot-section>
+          <div class="section-heading">
+            <h2 id="golfbot-watches-title">Active Watches</h2>
+            <div class="section-meta">Tee time filters</div>
+          </div>
+          <div class="apps-grid" id="golfbot-watches"></div>
+        </section>
+
+        <section class="section" aria-labelledby="golfbot-logs-title" data-golfbot-section>
+          <div class="section-heading">
+            <h2 id="golfbot-logs-title">Recent Logs</h2>
+            <div class="section-meta">Runtime output</div>
+          </div>
+          <div class="logs-panel" id="golfbot-logs"></div>
+        </section>
+
+        <section class="section" aria-labelledby="golfbot-actions-title" data-golfbot-section>
+          <div class="actions-card">
+            <div class="section-heading">
+              <h2 id="golfbot-actions-title">Quick Actions</h2>
+              <div class="section-meta">Disabled</div>
+            </div>
+            <div class="actions-grid">
+              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-rocket"></use></svg>Start bot</button>
+              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-server"></use></svg>Stop bot</button>
+              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-rocket"></use></svg>Restart bot</button>
+              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-rocket"></use></svg>Deploy bot</button>
+              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-logs"></use></svg>View logs</button>
+            </div>
+          </div>
+        </section>
+
+        <div class="empty-state is-hidden" id="golfbot-fallback">GolfBot data unavailable</div>
       </section>
       <section class="page" id="page-statistics" data-title="Statistics" data-subtitle="Coming soon">
         <div class="coming-soon"><div class="coming-soon-inner"><div class="coming-icon"><svg class="icon"><use href="#icon-chart"></use></svg></div><div class="coming-title">Statistics</div><p class="coming-copy">Coming soon.</p></div></div>
@@ -1183,10 +1410,21 @@
       servicesCountChip: document.getElementById("services-count-chip"),
       certificateChip: document.getElementById("certificate-chip"),
       gitChip: document.getElementById("git-chip"),
+      golfBotFallback: document.getElementById("golfbot-fallback"),
+      golfBotStatusPill: document.getElementById("golfbot-status-pill"),
+      golfBotStatusText: document.getElementById("golfbot-status-text"),
+      golfBotStatusMeta: document.getElementById("golfbot-status-meta"),
+      golfBotWatches: document.getElementById("golfbot-watches"),
+      golfBotLogs: document.getElementById("golfbot-logs"),
       liveClock: document.getElementById("live-clock")
     };
 
     const textCache = new Map();
+    const appState = {
+      currentPage: "dashboard",
+      platformStatus: { text: "Checking systems", tone: "unknown" },
+      golfBotStatus: { text: "Unknown", tone: "unknown" }
+    };
 
     const pulse = (element) => {
       element.classList.remove("value-flash");
@@ -1257,6 +1495,67 @@
       return value || "unknown";
     };
 
+    const escapeHtml = (value) => {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    };
+
+    const formatMaybeDateTime = (value) => {
+      if (!value || value === "unknown") return "unknown";
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleString("en-GB");
+    };
+
+    const formatInterval = (value) => {
+      if (value === undefined || value === null || value === "") return "unknown";
+      return typeof value === "number" ? `${value}s` : value;
+    };
+
+    const formatMinutes = (value) => {
+      if (value === undefined || value === null || value === "") return "unknown";
+      const minutes = Number(value);
+      return Number.isFinite(minutes) ? `${minutes} min` : value;
+    };
+
+    const formatSecondsDuration = (value) => {
+      if (value === undefined || value === null || value === "") return "unknown";
+      const seconds = Number(value);
+      if (!Number.isFinite(seconds)) return value;
+
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      if (minutes && remainingSeconds) return `${minutes} min ${remainingSeconds} sek`;
+      if (minutes) return `${minutes} min`;
+      return `${remainingSeconds} sek`;
+    };
+
+    const formatSwedishDate = (value) => {
+      if (!value || value === "unknown") return "unknown";
+      const date = new Date(`${value}T00:00:00`);
+      return Number.isNaN(date.getTime())
+        ? value
+        : date.toLocaleDateString("sv-SE", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    };
+
+    const formatTimeWindow = (value) => {
+      return getValue(value).replace(/\s*-\s*/g, "–");
+    };
+
+    const formatPlayers = (value) => {
+      if (value === undefined || value === null || value === "") return "unknown";
+      const players = Number(value);
+      return Number.isFinite(players) ? `${players} spelare` : value;
+    };
+
+    const formatTelegramStatus = (data) => {
+      const value = data.telegramStatus || data.telegram?.status || data.telegram || "unknown";
+      return String(value).toLowerCase() === "online" ? "Online" : value;
+    };
+
     const getPublicIp = (data) => {
       return data.publicIp || data.publicIP || data.public_ip || "unknown";
     };
@@ -1289,6 +1588,38 @@
       element.classList.toggle("planned", tone === "planned");
       element.classList.toggle("degraded", tone === "degraded");
       element.classList.toggle("unknown", tone === "unknown");
+    };
+
+    const updateHeaderStatus = () => {
+      const status = appState.currentPage === "golfbot" ? appState.golfBotStatus : appState.platformStatus;
+      setTone(elements.systemStatus, status.tone);
+      elements.systemStatusText.textContent = status.text;
+    };
+
+    const normalizeGolfBotStatus = (status) => {
+      const normalized = String(status || "unknown").toLowerCase();
+      if (normalized === "running") return { label: "Online", tone: "online" };
+      if (normalized === "stopped") return { label: "Offline", tone: "degraded" };
+      return { label: "Unknown", tone: "unknown" };
+    };
+
+    const getGolfBotWatches = (data) => {
+      if (Array.isArray(data.activeWatches)) return data.activeWatches;
+      if (Array.isArray(data.watches)) return data.watches;
+      return [];
+    };
+
+    const getGolfBotActiveWatchCount = (data, watches) => {
+      if (typeof data.activeWatches === "number") return data.activeWatches;
+      if (typeof data.activeWatchCount === "number") return data.activeWatchCount;
+      if (typeof data.activeWatchesCount === "number") return data.activeWatchesCount;
+      return watches.length;
+    };
+
+    const getGolfBotLogs = (data) => {
+      if (Array.isArray(data.logs)) return data.logs;
+      if (typeof data.logs === "string") return data.logs.split("\n");
+      return [];
     };
 
     const renderServiceCards = () => {
@@ -1344,9 +1675,9 @@
       const allOnline = onlineCount === SERVICE_MAP.length;
       const statusText = allOnline ? "All systems online" : "Action required";
 
-      elements.systemStatus.classList.toggle("degraded", !allOnline);
+      appState.platformStatus = { text: statusText, tone: allOnline ? "online" : "degraded" };
       elements.servicesCountChip.classList.toggle("degraded", !allOnline);
-      elements.systemStatusText.textContent = statusText;
+      updateHeaderStatus();
 
       setText("services-count", `${onlineCount} services online`);
       setText("health-status", statusText);
@@ -1436,9 +1767,100 @@
       setText("git-summary", gitKnown ? "Git metadata synced" : "Git metadata unknown");
     };
 
+    const setGolfBotAvailable = (isAvailable) => {
+      document.querySelectorAll("[data-golfbot-section]").forEach((section) => {
+        section.classList.toggle("is-hidden", !isAvailable);
+      });
+      elements.golfBotFallback.classList.toggle("is-hidden", isAvailable);
+    };
+
+    const renderGolfBotWatches = (watches) => {
+      if (!watches.length) {
+        elements.golfBotWatches.innerHTML = '<div class="empty-state">No active watches</div>';
+        return;
+      }
+
+      elements.golfBotWatches.innerHTML = watches.map((watch) => {
+        const status = getValue(watch.status);
+        const isActive = String(status).toLowerCase() === "active" || String(status).toLowerCase() === "running";
+        const toneClass = isActive ? "" : " unknown";
+
+        return `
+          <article class="watch-card">
+            <div class="watch-top">
+              <div class="watch-title">
+                <div class="watch-club">${escapeHtml(getValue(watch.club))}</div>
+                <div class="watch-course">${escapeHtml(getValue(watch.course))}</div>
+              </div>
+              <div class="status-pill${toneClass}"><span class="dot"></span><span>${escapeHtml(status)}</span></div>
+            </div>
+            <div class="watch-meta">
+              <div class="watch-meta-item"><div class="watch-label">Date</div><div class="watch-value">${escapeHtml(formatSwedishDate(watch.date))}</div></div>
+              <div class="watch-meta-item"><div class="watch-label">Time</div><div class="watch-value">${escapeHtml(formatTimeWindow(watch.timeWindow))}</div></div>
+              <div class="watch-meta-item"><div class="watch-label">Players</div><div class="watch-value">${escapeHtml(formatPlayers(watch.players))}</div></div>
+              <div class="watch-meta-item"><div class="watch-label">Status</div><div class="watch-value">${escapeHtml(status)}</div></div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    };
+
+    const renderGolfBotLogs = (logs) => {
+      if (!logs.length) {
+        elements.golfBotLogs.innerHTML = '<p class="log-line">No recent logs.</p>';
+        return;
+      }
+
+      elements.golfBotLogs.innerHTML = logs
+        .slice(-80)
+        .map((line) => `<p class="log-line"><span class="log-prompt">&gt;</span> ${escapeHtml(line)}</p>`)
+        .join("");
+    };
+
+    const renderGolfBot = (data) => {
+      const watches = getGolfBotWatches(data);
+      const logs = getGolfBotLogs(data);
+      const status = normalizeGolfBotStatus(data.status);
+      const activeWatchCount = getGolfBotActiveWatchCount(data, watches);
+      const telegramStatus = formatTelegramStatus(data);
+
+      setGolfBotAvailable(true);
+      appState.golfBotStatus = { text: `GolfBot ${status.label}`, tone: status.tone };
+      updateHeaderStatus();
+      setTone(elements.golfBotStatusPill, status.tone);
+      elements.golfBotStatusText.textContent = status.label;
+      setText("golfbot-status-meta", status.label === "Online" ? "Bot is monitoring tee times" : "Bot is not currently monitoring");
+
+      setText("golfbot-overview-status", status.label);
+      setText("golfbot-active-watches", String(activeWatchCount));
+      setText("golfbot-search-interval", data.searchIntervalMinutes !== undefined
+        ? formatMinutes(data.searchIntervalMinutes)
+        : formatInterval(data.searchInterval ?? data.searchIntervalSeconds));
+      setText("golfbot-last-search", formatMaybeDateTime(data.lastSearch));
+      setText("golfbot-next-search", data.nextSearchInSeconds !== undefined
+        ? formatSecondsDuration(data.nextSearchInSeconds)
+        : formatMaybeDateTime(data.nextSearch));
+      setText("golfbot-telegram-status", telegramStatus);
+      setText("golfbot-matches-today", String(data.matchesToday ?? "unknown"));
+      setText("golfbot-notifications-today", String(data.notificationsToday ?? "unknown"));
+
+      renderGolfBotWatches(watches);
+      renderGolfBotLogs(logs);
+    };
+
+    const renderGolfBotUnavailable = () => {
+      setGolfBotAvailable(false);
+      appState.golfBotStatus = { text: "GolfBot unavailable", tone: "unknown" };
+      updateHeaderStatus();
+      setTone(elements.golfBotStatusPill, "unknown");
+      elements.golfBotStatusText.textContent = "Unknown";
+      setText("golfbot-status-meta", "GolfBot data unavailable");
+    };
+
     const setPage = (pageId) => {
       const page = document.getElementById(`page-${pageId}`);
       if (!page) return;
+      appState.currentPage = pageId;
 
       document.querySelectorAll("[data-page-target]").forEach((link) => {
         link.classList.toggle("active", link.dataset.pageTarget === pageId);
@@ -1450,6 +1872,7 @@
 
       elements.pageTitle.textContent = page.dataset.title || "BENI Platform";
       elements.pageSubtitle.textContent = page.dataset.subtitle || "";
+      updateHeaderStatus();
     };
 
     const updateClock = () => {
@@ -1468,6 +1891,17 @@
       }
     }
 
+    async function loadGolfBot() {
+      try {
+        const response = await fetch("/api/golfbot.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("GolfBot data unavailable");
+        const data = await response.json();
+        renderGolfBot(data);
+      } catch (error) {
+        renderGolfBotUnavailable();
+      }
+    }
+
     renderServiceCards();
 
     document.querySelectorAll("[data-page-target]").forEach((link) => {
@@ -1476,8 +1910,10 @@
 
     updateClock();
     loadStatus();
+    loadGolfBot();
     setInterval(updateClock, 1000);
     setInterval(loadStatus, 5000);
+    setInterval(loadGolfBot, 5000);
   </script>
 </body>
 </html>
