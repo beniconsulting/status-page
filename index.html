@@ -19,6 +19,8 @@
       --blue-soft: rgba(37, 99, 235, .16);
       --green: #22c55e;
       --green-soft: rgba(34, 197, 94, .14);
+      --yellow: #eab308;
+      --yellow-soft: rgba(234, 179, 8, .13);
       --red: #ef4444;
       --red-soft: rgba(239, 68, 68, .12);
       --shadow: 0 24px 80px rgba(0, 0, 0, .36);
@@ -192,11 +194,13 @@
       display: none;
     }
 
-    .mission-chip {
+    .mission-chip,
+    .status-pill {
       min-height: 32px;
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      width: fit-content;
       flex: 0 0 auto;
       padding: 0 11px;
       border: 1px solid rgba(34, 197, 94, .22);
@@ -208,10 +212,17 @@
       white-space: nowrap;
     }
 
-    .mission-chip.degraded {
+    .mission-chip.degraded,
+    .status-pill.degraded {
       border-color: rgba(239, 68, 68, .24);
       color: #ffe0e0;
       background: var(--red-soft);
+    }
+
+    .status-pill.planned {
+      border-color: rgba(234, 179, 8, .26);
+      color: #fff3c4;
+      background: var(--yellow-soft);
     }
 
     .dot {
@@ -223,10 +234,16 @@
     }
 
     .mission-chip.degraded .dot,
+    .status-pill.degraded .dot,
     .system-pill.degraded .dot,
     .service-dot:not(.ok) {
       background: var(--red);
       box-shadow: 0 0 20px rgba(239, 68, 68, .8);
+    }
+
+    .status-pill.planned .dot {
+      background: var(--yellow);
+      box-shadow: 0 0 20px rgba(234, 179, 8, .6);
     }
 
     .page-header {
@@ -288,11 +305,18 @@
       background: var(--red-soft);
     }
 
-    .updated {
+    .updated,
+    .live-clock {
       color: var(--muted-2);
       font-size: 12px;
       text-align: right;
       white-space: nowrap;
+    }
+
+    .live-clock {
+      color: #dbe7ff;
+      font-weight: 850;
+      font-variant-numeric: tabular-nums;
     }
 
     .page {
@@ -331,16 +355,23 @@
       letter-spacing: .14em;
     }
 
-    .metrics-grid {
+    .overview-grid,
+    .metrics-grid,
+    .services-grid,
+    .apps-grid,
+    .infra-grid {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
       gap: 16px;
     }
 
+    .overview-card,
     .metric-card,
     .service-card,
+    .app-card,
     .server-panel,
     .actions-card,
+    .activity-card,
     .coming-soon {
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -351,73 +382,73 @@
       backdrop-filter: blur(18px);
     }
 
-    .metric-card {
-      grid-column: span 4;
-      min-height: 190px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 23px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .metric-card::after {
-      content: "";
-      position: absolute;
-      inset: auto -38px -64px auto;
-      width: 138px;
-      height: 138px;
-      border-radius: 999px;
-      background: rgba(37, 99, 235, .14);
-      filter: blur(24px);
-      pointer-events: none;
-    }
-
-    .metric-card.compact {
+    .overview-card {
       grid-column: span 3;
+      min-height: 138px;
+      display: grid;
+      align-content: space-between;
+      gap: 20px;
+      padding: 20px;
     }
 
-    .metric-top {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
+    .overview-label,
     .metric-label,
-    .detail-label {
+    .detail-label,
+    .app-domain,
+    .feed-time {
       color: var(--muted);
       font-size: 12px;
       font-weight: 800;
     }
 
-    .metric-icon {
-      width: 34px;
-      height: 34px;
+    .overview-value {
+      font-size: clamp(22px, 2.8vw, 34px);
+      line-height: 1.05;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .metric-card {
+      grid-column: span 3;
+      min-height: 176px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 22px;
+      overflow: hidden;
+    }
+
+    .metric-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .metric-icon,
+    .app-icon,
+    .coming-icon {
       display: grid;
       place-items: center;
-      flex: 0 0 auto;
       border: 1px solid var(--border);
-      border-radius: 13px;
       color: #dbe7ff;
       background: rgba(37, 99, 235, .12);
     }
 
+    .metric-icon,
+    .app-icon {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 auto;
+      border-radius: 13px;
+    }
+
     .metric-value {
-      position: relative;
-      z-index: 1;
       margin-top: 18px;
-      font-size: clamp(34px, 4vw, 48px);
+      font-size: clamp(30px, 3.4vw, 44px);
       line-height: 1;
       font-weight: 850;
       letter-spacing: 0;
       overflow-wrap: anywhere;
-    }
-
-    .metric-card.compact .metric-value {
-      font-size: clamp(27px, 3.1vw, 38px);
     }
 
     .metric-note {
@@ -428,10 +459,8 @@
     }
 
     .progress {
-      position: relative;
-      z-index: 1;
       height: 10px;
-      margin-top: 22px;
+      margin-top: 20px;
       overflow: hidden;
       border-radius: 999px;
       background: rgba(255, 255, 255, .08);
@@ -444,16 +473,12 @@
       border-radius: inherit;
       background: linear-gradient(90deg, #93c5fd, var(--blue));
       box-shadow: 0 0 24px rgba(37, 99, 235, .55);
-      transition: width .5s ease;
+      transition: width .45s ease;
     }
 
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .service-card {
+    .service-card,
+    .app-card {
+      grid-column: span 3;
       min-height: 126px;
       padding: 20px;
       display: grid;
@@ -462,7 +487,8 @@
       transition: transform .18s ease, border-color .18s ease, background .18s ease;
     }
 
-    .service-card:hover {
+    .service-card:hover,
+    .app-card:hover {
       transform: translateY(-3px);
       border-color: var(--border-strong);
       background:
@@ -470,7 +496,9 @@
         var(--panel-strong);
     }
 
-    .service-top {
+    .service-top,
+    .app-top,
+    .feed-item {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -491,7 +519,8 @@
       box-shadow: 0 0 20px rgba(34, 197, 94, .8);
     }
 
-    .service-name {
+    .service-name,
+    .app-name {
       min-width: 0;
       font-size: 15px;
       font-weight: 850;
@@ -508,6 +537,50 @@
       color: #d9ffe5;
     }
 
+    .app-card.planned {
+      border-color: rgba(234, 179, 8, .2);
+    }
+
+    .app-domain {
+      overflow-wrap: anywhere;
+    }
+
+    .activity-card {
+      padding: 20px;
+    }
+
+    .feed-list {
+      display: grid;
+      gap: 0;
+      margin-top: 4px;
+    }
+
+    .feed-item {
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .feed-item:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .feed-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #f4f4f5;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .server-panel,
+    .actions-card,
+    .activity-card {
+      grid-column: span 6;
+    }
+
     .server-panel {
       display: grid;
       padding: 2px 22px;
@@ -517,11 +590,11 @@
     }
 
     .server-detail {
-      min-height: 86px;
+      min-height: 78px;
       display: grid;
       align-content: center;
       gap: 8px;
-      padding: 18px 0;
+      padding: 16px 0;
       border-bottom: 1px solid var(--border);
       min-width: 0;
     }
@@ -539,12 +612,13 @@
     .actions-card {
       padding: 20px;
       display: grid;
+      align-content: start;
       gap: 14px;
     }
 
     .actions-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
     }
 
@@ -584,12 +658,7 @@
     .coming-icon {
       width: 52px;
       height: 52px;
-      display: grid;
-      place-items: center;
-      border: 1px solid var(--border);
       border-radius: 18px;
-      color: #dbe7ff;
-      background: var(--blue-soft);
     }
 
     .coming-title {
@@ -605,19 +674,32 @@
       line-height: 1.7;
     }
 
-    .is-hidden {
-      display: none;
+    .value-flash {
+      animation: valueFlash .65s ease;
+    }
+
+    @keyframes valueFlash {
+      0% {
+        color: #fff;
+        text-shadow: 0 0 22px rgba(37, 99, 235, .42);
+      }
+      100% {
+        text-shadow: none;
+      }
     }
 
     @media (max-width: 1180px) {
+      .overview-card,
       .metric-card,
-      .metric-card.compact {
+      .service-card,
+      .app-card {
         grid-column: span 6;
       }
 
-      .services-grid,
-      .actions-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .server-panel,
+      .actions-card,
+      .activity-card {
+        grid-column: span 12;
       }
     }
 
@@ -676,17 +758,22 @@
         justify-items: start;
       }
 
-      .updated {
+      .updated,
+      .live-clock {
         text-align: left;
         white-space: normal;
       }
 
+      .overview-card,
       .metric-card,
-      .metric-card.compact {
+      .service-card,
+      .app-card,
+      .server-panel,
+      .actions-card,
+      .activity-card {
         grid-column: span 12;
       }
 
-      .services-grid,
       .actions-grid {
         grid-template-columns: 1fr;
       }
@@ -697,10 +784,13 @@
         font-size: 34px;
       }
 
+      .overview-card,
       .metric-card,
       .service-card,
+      .app-card,
       .server-panel,
-      .actions-card {
+      .actions-card,
+      .activity-card {
         padding-left: 18px;
         padding-right: 18px;
       }
@@ -727,6 +817,8 @@
     <symbol id="icon-disk" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></symbol>
     <symbol id="icon-temp" viewBox="0 0 24 24"><path d="M14 14.8V5a4 4 0 0 0-8 0v9.8a6 6 0 1 0 8 0Z"/><path d="M10 6v9"/></symbol>
     <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="icon-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6z"/><path d="m9 12 2 2 4-5"/></symbol>
   </svg>
 
   <div class="shell">
@@ -764,8 +856,8 @@
       <header class="page-header">
         <div>
           <div class="kicker">BENI PLATFORM</div>
-          <h1 id="page-title">Network Operations Center</h1>
-          <div class="header-subtitle" id="page-subtitle">Infrastructure Dashboard</div>
+          <h1 id="page-title">BENI Operations Center</h1>
+          <div class="header-subtitle" id="page-subtitle">Platform Overview</div>
         </div>
 
         <div class="header-status">
@@ -773,171 +865,193 @@
             <span class="dot"></span>
             <span id="system-status-text">Kontrollerar system</span>
           </div>
+          <div class="live-clock" id="live-clock">--:--:--</div>
           <div class="updated" id="updated">Senast uppdaterad -</div>
         </div>
       </header>
 
-      <section class="page active" id="page-dashboard" data-title="Network Operations Center" data-subtitle="Infrastructure Dashboard">
-        <section class="section" aria-labelledby="dashboard-title">
+      <section class="page active" id="page-dashboard" data-title="BENI Operations Center" data-subtitle="Platform Overview">
+        <section class="section" aria-labelledby="health-title">
           <div class="section-heading">
-            <h2 id="dashboard-title">Dashboard</h2>
-            <div class="section-meta">Core metrics</div>
+            <h2 id="health-title">Platform Health</h2>
+            <div class="section-meta">Live summary</div>
+          </div>
+
+          <div class="overview-grid">
+            <article class="overview-card">
+              <div class="overview-label">Systemstatus</div>
+              <div class="overview-value" id="health-status">Kontrollerar</div>
+            </article>
+            <article class="overview-card">
+              <div class="overview-label">Aktiva tjänster</div>
+              <div class="overview-value" id="active-services">0 / 4</div>
+            </article>
+            <article class="overview-card">
+              <div class="overview-label">Senast uppdaterad</div>
+              <div class="overview-value" id="health-updated">-</div>
+            </article>
+            <article class="overview-card">
+              <div class="overview-label">Uptime</div>
+              <div class="overview-value" id="health-uptime">-</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="dashboard-metrics-title">
+          <div class="section-heading">
+            <h2 id="dashboard-metrics-title">Core Metrics</h2>
+            <div class="section-meta">Server pulse</div>
           </div>
 
           <div class="metrics-grid">
             <article class="metric-card">
               <div>
                 <div class="metric-top">
-                  <div class="metric-label">CPU Usage</div>
+                  <div class="metric-label">CPU</div>
                   <div class="metric-icon"><svg class="icon"><use href="#icon-cpu"></use></svg></div>
                 </div>
-                <div class="metric-value" id="cpu">-</div>
+                <div class="metric-value" data-metric-value="cpu">-</div>
               </div>
-              <div class="progress" aria-label="CPU-användning">
-                <div class="progress-fill" id="cpu-progress"></div>
-              </div>
+              <div class="progress" aria-label="CPU-användning"><div class="progress-fill" data-progress="cpu"></div></div>
             </article>
 
             <article class="metric-card">
               <div>
                 <div class="metric-top">
-                  <div class="metric-label">RAM Usage</div>
+                  <div class="metric-label">RAM</div>
                   <div class="metric-icon"><svg class="icon"><use href="#icon-memory"></use></svg></div>
                 </div>
-                <div class="metric-value" id="memory">-</div>
+                <div class="metric-value" data-metric-value="memory">-</div>
               </div>
-              <div class="progress" aria-label="RAM-användning">
-                <div class="progress-fill" id="memory-progress"></div>
-              </div>
+              <div class="progress" aria-label="RAM-användning"><div class="progress-fill" data-progress="memory"></div></div>
             </article>
 
             <article class="metric-card">
               <div>
                 <div class="metric-top">
-                  <div class="metric-label">Disk Usage</div>
+                  <div class="metric-label">Disk</div>
                   <div class="metric-icon"><svg class="icon"><use href="#icon-disk"></use></svg></div>
                 </div>
-                <div class="metric-value" id="disk">-</div>
+                <div class="metric-value" data-metric-value="disk">-</div>
               </div>
-              <div class="progress" aria-label="Diskanvändning">
-                <div class="progress-fill" id="disk-progress"></div>
-              </div>
+              <div class="progress" aria-label="Diskanvändning"><div class="progress-fill" data-progress="disk"></div></div>
             </article>
 
-            <article class="metric-card compact">
+            <article class="metric-card">
               <div>
                 <div class="metric-top">
-                  <div class="metric-label">Temperature</div>
+                  <div class="metric-label">Temperatur</div>
                   <div class="metric-icon"><svg class="icon"><use href="#icon-temp"></use></svg></div>
                 </div>
-                <div class="metric-value" id="temperature">-</div>
+                <div class="metric-value" data-metric-value="temperature">-</div>
                 <div class="metric-note">Thermal sensor</div>
               </div>
             </article>
-
-            <article class="metric-card compact">
-              <div>
-                <div class="metric-top">
-                  <div class="metric-label">Uptime</div>
-                  <div class="metric-icon"><svg class="icon"><use href="#icon-clock"></use></svg></div>
-                </div>
-                <div class="metric-value" id="uptime">-</div>
-                <div class="metric-note">Current boot session</div>
-              </div>
-            </article>
           </div>
         </section>
 
-        <section class="section" aria-labelledby="services-title">
+        <section class="section" aria-labelledby="dashboard-services-title">
           <div class="section-heading">
-            <h2 id="services-title">Services</h2>
+            <h2 id="dashboard-services-title">Services</h2>
             <div class="section-meta">Runtime status</div>
           </div>
+          <div class="services-grid" data-services-grid></div>
+        </section>
 
-          <div class="services-grid">
-            <article class="service-card">
-              <div class="service-top">
-                <span id="caddy-dot" class="service-dot"></span>
-                <div class="service-name">Caddy</div>
-              </div>
-              <div id="caddy" class="service-status">-</div>
+        <section class="section" aria-labelledby="apps-title">
+          <div class="section-heading">
+            <h2 id="apps-title">Platform Apps</h2>
+            <div class="section-meta">Public surface</div>
+          </div>
+
+          <div class="apps-grid">
+            <article class="app-card" data-app="website">
+              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-globe"></use></svg></div><div><div class="app-name">Website</div><div class="app-domain">beniconsulting.se</div></div></div>
+              <div class="status-pill" data-app-status="website"><span class="dot"></span><span>Online</span></div>
             </article>
-
-            <article class="service-card">
-              <div class="service-top">
-                <span id="website-dot" class="service-dot"></span>
-                <div class="service-name">BENI Website</div>
-              </div>
-              <div id="website" class="service-status">-</div>
+            <article class="app-card" data-app="status">
+              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-shield"></use></svg></div><div><div class="app-name">Status</div><div class="app-domain">status.beniconsulting.se</div></div></div>
+              <div class="status-pill" data-app-status="status"><span class="dot"></span><span>Online</span></div>
             </article>
-
-            <article class="service-card">
-              <div class="service-top">
-                <span id="bot-dot" class="service-dot"></span>
-                <div class="service-name">MinGolfBot</div>
-              </div>
-              <div id="bot" class="service-status">-</div>
+            <article class="app-card" data-app="golfbot">
+              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-golf"></use></svg></div><div><div class="app-name">GolfBot</div><div class="app-domain">golf.beniconsulting.se</div></div></div>
+              <div class="status-pill" data-app-status="golfbot"><span class="dot"></span><span>Online</span></div>
             </article>
-
-            <article class="service-card">
-              <div class="service-top">
-                <span id="fail2ban-dot" class="service-dot"></span>
-                <div class="service-name">Fail2Ban</div>
-              </div>
-              <div id="fail2ban" class="service-status">-</div>
+            <article class="app-card planned" data-app="api">
+              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-server"></use></svg></div><div><div class="app-name">API</div><div class="app-domain">api.beniconsulting.se</div></div></div>
+              <div class="status-pill planned" data-app-status="api"><span class="dot"></span><span>Planerad</span></div>
             </article>
           </div>
         </section>
 
-        <section class="section" aria-labelledby="server-title">
+        <section class="section" aria-labelledby="activity-title">
+          <div class="activity-card">
+            <div class="section-heading">
+              <h2 id="activity-title">Activity Feed</h2>
+              <div class="section-meta">Latest events</div>
+            </div>
+            <div class="feed-list">
+              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Website deploy körd</div><div class="feed-time">nyss</div></div>
+              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Caddy certifikat aktivt</div><div class="feed-time">aktivt</div></div>
+              <div class="feed-item"><div class="feed-title"><span class="dot"></span>MinGolfBot online</div><div class="feed-time">online</div></div>
+              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Fail2Ban aktivt</div><div class="feed-time">aktivt</div></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="page" id="page-infrastructure" data-title="Infrastructure" data-subtitle="Host & Runtime Operations">
+        <section class="section" aria-labelledby="infra-title">
           <div class="section-heading">
-            <h2 id="server-title">Server</h2>
+            <h2 id="infra-title">Infrastructure</h2>
             <div class="section-meta">Host details</div>
           </div>
 
-          <div class="server-panel">
-            <div class="server-detail">
-              <div class="detail-label">Hostname</div>
-              <div class="detail-value" id="hostname">-</div>
+          <div class="infra-grid">
+            <div class="server-panel">
+              <div class="server-detail"><div class="detail-label">Hostname</div><div class="detail-value" id="hostname">-</div></div>
+              <div class="server-detail"><div class="detail-label">Lokal IP</div><div class="detail-value" id="local-ip">-</div></div>
+              <div class="server-detail"><div class="detail-label">Ubuntu-version</div><div class="detail-value" id="os-version">26.04</div></div>
+              <div class="server-detail"><div class="detail-label">Uptime</div><div class="detail-value" id="server-uptime">-</div></div>
             </div>
-            <div class="server-detail">
-              <div class="detail-label">Lokal IP</div>
-              <div class="detail-value" id="local-ip">-</div>
-            </div>
-            <div class="server-detail is-hidden" id="public-ip-card">
-              <div class="detail-label">Publik IP</div>
-              <div class="detail-value" id="public-ip">-</div>
-            </div>
-            <div class="server-detail">
-              <div class="detail-label">Ubuntu</div>
-              <div class="detail-value" id="os-version">26.04</div>
-            </div>
-            <div class="server-detail">
-              <div class="detail-label">Uptime</div>
-              <div class="detail-value" id="server-uptime">-</div>
+
+            <div class="actions-card">
+              <div class="section-heading">
+                <h2>Quick Actions</h2>
+                <div class="section-meta">Disabled</div>
+              </div>
+              <div class="actions-grid">
+                <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-rocket"></use></svg>Restart GolfBot</button>
+                <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-server"></use></svg>Restart Website</button>
+                <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-rocket"></use></svg>Deploy Website</button>
+                <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-logs"></use></svg>View Logs</button>
+              </div>
             </div>
           </div>
         </section>
 
-        <section class="section" aria-labelledby="actions-title">
-          <div class="actions-card">
-            <div class="section-heading">
-              <h2 id="actions-title">Quick Actions</h2>
-              <div class="section-meta">Disabled</div>
-            </div>
-            <div class="actions-grid">
-              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-rocket"></use></svg>Restart GolfBot</button>
-              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-server"></use></svg>Restart Website</button>
-              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-rocket"></use></svg>Deploy Website</button>
-              <button class="action-button" type="button" disabled><svg class="icon"><use href="#icon-logs"></use></svg>View Logs</button>
-            </div>
+        <section class="section" aria-labelledby="infra-metrics-title">
+          <div class="section-heading">
+            <h2 id="infra-metrics-title">Core Metrics</h2>
+            <div class="section-meta">Detailed telemetry</div>
           </div>
+          <div class="metrics-grid">
+            <article class="metric-card"><div><div class="metric-top"><div class="metric-label">CPU</div><div class="metric-icon"><svg class="icon"><use href="#icon-cpu"></use></svg></div></div><div class="metric-value" data-metric-value="cpu">-</div></div><div class="progress"><div class="progress-fill" data-progress="cpu"></div></div></article>
+            <article class="metric-card"><div><div class="metric-top"><div class="metric-label">RAM</div><div class="metric-icon"><svg class="icon"><use href="#icon-memory"></use></svg></div></div><div class="metric-value" data-metric-value="memory">-</div></div><div class="progress"><div class="progress-fill" data-progress="memory"></div></div></article>
+            <article class="metric-card"><div><div class="metric-top"><div class="metric-label">Disk</div><div class="metric-icon"><svg class="icon"><use href="#icon-disk"></use></svg></div></div><div class="metric-value" data-metric-value="disk">-</div></div><div class="progress"><div class="progress-fill" data-progress="disk"></div></div></article>
+            <article class="metric-card"><div><div class="metric-top"><div class="metric-label">Temperatur</div><div class="metric-icon"><svg class="icon"><use href="#icon-temp"></use></svg></div></div><div class="metric-value" data-metric-value="temperature">-</div><div class="metric-note">Thermal sensor</div></div></article>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="infra-services-title">
+          <div class="section-heading">
+            <h2 id="infra-services-title">Services</h2>
+            <div class="section-meta">Systemd state</div>
+          </div>
+          <div class="services-grid" data-services-grid></div>
         </section>
       </section>
 
-      <section class="page" id="page-infrastructure" data-title="Infrastructure" data-subtitle="Coming soon">
-        <div class="coming-soon"><div class="coming-soon-inner"><div class="coming-icon"><svg class="icon"><use href="#icon-server"></use></svg></div><div class="coming-title">Infrastructure</div><p class="coming-copy">Coming soon.</p></div></div>
-      </section>
       <section class="page" id="page-golfbot" data-title="GolfBot" data-subtitle="Coming soon">
         <div class="coming-soon"><div class="coming-soon-inner"><div class="coming-icon"><svg class="icon"><use href="#icon-golf"></use></svg></div><div class="coming-title">GolfBot</div><p class="coming-copy">Coming soon.</p></div></div>
       </section>
@@ -958,10 +1072,10 @@
 
   <script>
     const SERVICE_MAP = [
-      { id: "caddy", key: "caddy" },
-      { id: "website", key: "beniWebsite" },
-      { id: "bot", key: "mingolfbot" },
-      { id: "fail2ban", key: "fail2ban" }
+      { id: "caddy", key: "caddy", label: "Caddy" },
+      { id: "website", key: "beniWebsite", label: "BENI Website" },
+      { id: "bot", key: "mingolfbot", label: "MinGolfBot" },
+      { id: "fail2ban", key: "fail2ban", label: "Fail2Ban" }
     ];
 
     const elements = {
@@ -970,21 +1084,45 @@
       systemStatus: document.getElementById("system-status"),
       systemStatusText: document.getElementById("system-status-text"),
       servicesCountChip: document.getElementById("services-count-chip"),
-      publicIpCard: document.getElementById("public-ip-card")
+      liveClock: document.getElementById("live-clock")
+    };
+
+    const textCache = new Map();
+
+    const pulse = (element) => {
+      element.classList.remove("value-flash");
+      void element.offsetWidth;
+      element.classList.add("value-flash");
     };
 
     const setText = (id, value) => {
       const element = document.getElementById(id);
-      if (element) {
-        element.textContent = value || "-";
+      if (!element) return;
+      const nextValue = value || "-";
+      if (textCache.get(id) !== nextValue) {
+        element.textContent = nextValue;
+        textCache.set(id, nextValue);
+        pulse(element);
       }
     };
 
-    const setProgress = (id, value) => {
-      const element = document.getElementById(id);
-      if (!element) return;
+    const setTextAll = (selector, value) => {
+      document.querySelectorAll(selector).forEach((element, index) => {
+        const key = `${selector}-${index}`;
+        const nextValue = value || "-";
+        if (textCache.get(key) !== nextValue) {
+          element.textContent = nextValue;
+          textCache.set(key, nextValue);
+          pulse(element);
+        }
+      });
+    };
+
+    const setProgress = (metric, value) => {
       const percent = Math.max(0, Math.min(100, Number(value) || 0));
-      element.style.width = `${percent}%`;
+      document.querySelectorAll(`[data-progress="${metric}"]`).forEach((element) => {
+        element.style.width = `${percent}%`;
+      });
     };
 
     const parsePercent = (value) => {
@@ -1016,67 +1154,97 @@
       return percent ? `${percent.toLocaleString("sv-SE")} %` : value;
     };
 
-    const setService = (id, value) => {
-      const isOk = value === "active";
-      const status = document.getElementById(id);
-      const dot = document.getElementById(`${id}-dot`);
-
-      if (status) {
-        status.textContent = isOk ? "Online" : "Offline";
-        status.classList.toggle("ok", isOk);
-      }
-
-      if (dot) {
-        dot.classList.toggle("ok", isOk);
-      }
-
-      return isOk;
-    };
-
-    const setSystemStatus = (onlineCount) => {
-      const allOnline = onlineCount === SERVICE_MAP.length;
-
-      elements.systemStatus.classList.toggle("degraded", !allOnline);
-      elements.servicesCountChip.classList.toggle("degraded", !allOnline);
-      elements.systemStatusText.textContent = allOnline ? "Alla system online" : "Åtgärd krävs";
-      setText("services-count", `${onlineCount} services online`);
-    };
-
-    const getPublicIp = (data) => {
-      return data.publicIp || data.publicIP || data.public_ip || "";
-    };
-
     const getOsVersion = (data) => {
       return data.osVersion || data.os || "26.04";
     };
 
+    const renderServiceCards = () => {
+      document.querySelectorAll("[data-services-grid]").forEach((grid) => {
+        grid.innerHTML = SERVICE_MAP.map((service) => `
+          <article class="service-card">
+            <div class="service-top">
+              <span class="service-dot" data-service-dot="${service.id}"></span>
+              <div class="service-name">${service.label}</div>
+            </div>
+            <div class="service-status" data-service-status="${service.id}">-</div>
+          </article>
+        `).join("");
+      });
+    };
+
+    const setService = (id, value) => {
+      const isOk = value === "active";
+
+      document.querySelectorAll(`[data-service-status="${id}"]`).forEach((status) => {
+        status.textContent = isOk ? "Online" : "Offline";
+        status.classList.toggle("ok", isOk);
+      });
+
+      document.querySelectorAll(`[data-service-dot="${id}"]`).forEach((dot) => {
+        dot.classList.toggle("ok", isOk);
+      });
+
+      return isOk;
+    };
+
+    const setAppStatus = (id, status) => {
+      document.querySelectorAll(`[data-app-status="${id}"]`).forEach((pill) => {
+        const isPlanned = status === "Planerad";
+        const isOnline = status === "Online";
+        pill.classList.toggle("planned", isPlanned);
+        pill.classList.toggle("degraded", !isOnline && !isPlanned);
+        pill.querySelector("span:last-child").textContent = status;
+      });
+    };
+
+    const setSystemStatus = (onlineCount) => {
+      const allOnline = onlineCount === SERVICE_MAP.length;
+      const statusText = allOnline ? "Alla system online" : "Åtgärd krävs";
+
+      elements.systemStatus.classList.toggle("degraded", !allOnline);
+      elements.servicesCountChip.classList.toggle("degraded", !allOnline);
+      elements.systemStatusText.textContent = statusText;
+
+      setText("services-count", `${onlineCount} services online`);
+      setText("health-status", statusText);
+      setText("active-services", `${onlineCount} / ${SERVICE_MAP.length}`);
+    };
+
+    const formatUpdated = (value) => {
+      const updatedAt = value ? new Date(value) : new Date();
+      return updatedAt.toLocaleString("sv-SE");
+    };
+
     const renderStatus = (data) => {
+      const updated = formatUpdated(data.updatedAt);
+
       setText("hostname", data.hostname);
       setText("local-ip", data.ip);
-      setText("uptime", data.uptime);
       setText("server-uptime", data.uptime);
-      setText("temperature", data.temperature);
-      setText("cpu", formatPercentValue(data.cpu));
-      setText("memory", data.memory);
-      setText("disk", data.disk);
+      setText("health-uptime", data.uptime);
       setText("os-version", getOsVersion(data));
+      setText("updated", `Senast uppdaterad ${updated}`);
+      setText("health-updated", updated);
 
-      setProgress("cpu-progress", parsePercent(data.cpu));
-      setProgress("memory-progress", parseUsageRatio(data.memory));
-      setProgress("disk-progress", parseUsageRatio(data.disk));
+      setTextAll('[data-metric-value="cpu"]', formatPercentValue(data.cpu));
+      setTextAll('[data-metric-value="memory"]', data.memory);
+      setTextAll('[data-metric-value="disk"]', data.disk);
+      setTextAll('[data-metric-value="temperature"]', data.temperature);
 
-      const publicIp = getPublicIp(data);
-      elements.publicIpCard.classList.toggle("is-hidden", !publicIp);
-      setText("public-ip", publicIp);
+      setProgress("cpu", parsePercent(data.cpu));
+      setProgress("memory", parseUsageRatio(data.memory));
+      setProgress("disk", parseUsageRatio(data.disk));
 
       const services = data.services || {};
       const onlineCount = SERVICE_MAP.reduce((count, service) => {
         return count + (setService(service.id, services[service.key]) ? 1 : 0);
       }, 0);
-      setSystemStatus(onlineCount);
 
-      const updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
-      setText("updated", `Senast uppdaterad ${updatedAt.toLocaleString("sv-SE")}`);
+      setSystemStatus(onlineCount);
+      setAppStatus("website", services.beniWebsite === "active" ? "Online" : "Offline");
+      setAppStatus("status", services.caddy === "active" ? "Online" : "Offline");
+      setAppStatus("golfbot", services.mingolfbot === "active" ? "Online" : "Offline");
+      setAppStatus("api", "Planerad");
     };
 
     const setPage = (pageId) => {
@@ -1095,6 +1263,10 @@
       elements.pageSubtitle.textContent = page.dataset.subtitle || "";
     };
 
+    const updateClock = () => {
+      elements.liveClock.textContent = new Date().toLocaleTimeString("sv-SE");
+    };
+
     async function loadStatus() {
       try {
         const response = await fetch("/api/status.json", { cache: "no-store" });
@@ -1103,15 +1275,20 @@
       } catch (error) {
         setSystemStatus(0);
         setText("updated", "Senast uppdaterad -");
+        setText("health-updated", "-");
       }
     }
+
+    renderServiceCards();
 
     document.querySelectorAll("[data-page-target]").forEach((link) => {
       link.addEventListener("click", () => setPage(link.dataset.pageTarget));
     });
 
+    updateClock();
     loadStatus();
-    setInterval(loadStatus, 30000);
+    setInterval(updateClock, 1000);
+    setInterval(loadStatus, 5000);
   </script>
 </body>
 </html>
