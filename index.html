@@ -574,6 +574,125 @@
       padding: 20px;
     }
 
+    .attention-card,
+    .alert-card,
+    .link-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .025)),
+        var(--panel);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, .28);
+      backdrop-filter: blur(18px);
+    }
+
+    .attention-card {
+      grid-column: span 6;
+      min-height: 180px;
+      display: grid;
+      align-content: space-between;
+      gap: 22px;
+      padding: 24px;
+    }
+
+    .attention-value {
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .attention-note {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.55;
+    }
+
+    .alerts-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .alert-card {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px;
+    }
+
+    .alert-main {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .alert-title {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .alert-copy {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .alert-card.warning {
+      border-color: rgba(234, 179, 8, .25);
+    }
+
+    .alert-card.critical {
+      border-color: rgba(239, 68, 68, .28);
+    }
+
+    .quick-links-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .link-card {
+      min-height: 150px;
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+      padding: 20px;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .link-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-strong);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .032)),
+        var(--panel-strong);
+    }
+
+    .link-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 850;
+    }
+
+    .link-copy {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.5;
+    }
+
     .bot-status-card {
       padding: 22px;
       display: flex;
@@ -882,6 +1001,7 @@
 
       .server-panel,
       .actions-card,
+      .attention-card,
       .activity-card {
         grid-column: span 12;
       }
@@ -968,6 +1088,10 @@
       .actions-grid {
         grid-template-columns: 1fr;
       }
+
+      .quick-links-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 520px) {
@@ -982,6 +1106,8 @@
       .watch-card,
       .server-panel,
       .actions-card,
+      .attention-card,
+      .link-card,
       .activity-card {
         padding-left: 18px;
         padding-right: 18px;
@@ -1065,175 +1191,62 @@
       <section class="page active" id="page-dashboard" data-title="BENI Operations Center" data-subtitle="Platform Overview">
         <section class="section" aria-labelledby="health-title">
           <div class="section-heading">
-            <h2 id="health-title">Platform Health</h2>
-            <div class="section-meta">Live summary</div>
+            <h2 id="health-title">Attention Overview</h2>
+            <div class="section-meta">What needs attention</div>
           </div>
 
           <div class="overview-grid">
-            <article class="overview-card">
-              <div class="overview-label">System Status</div>
-              <div class="overview-value" id="health-status">Checking</div>
-            </article>
-            <article class="overview-card">
-              <div class="overview-label">Active Services</div>
-              <div class="overview-value" id="active-services">0 / 4</div>
-            </article>
-            <article class="overview-card">
-              <div class="overview-label">Last Updated</div>
-              <div class="overview-value" id="health-updated">-</div>
-            </article>
-            <article class="overview-card">
-              <div class="overview-label">Uptime</div>
-              <div class="overview-value" id="health-uptime">-</div>
-            </article>
-            <article class="overview-card">
-              <div class="overview-label">Certificates</div>
-              <div class="overview-value" id="health-certificates">-</div>
-            </article>
-            <article class="overview-card">
-              <div class="overview-label">Website Git</div>
-              <div class="overview-value" id="health-website-git">-</div>
-            </article>
-            <article class="overview-card">
-              <div class="overview-label">Status Page Git</div>
-              <div class="overview-value" id="health-status-git">-</div>
-            </article>
-            <article class="overview-card">
-              <div class="overview-label">Public IP</div>
-              <div class="overview-value" id="health-public-ip">-</div>
-            </article>
-          </div>
-        </section>
-
-        <section class="section" aria-labelledby="dashboard-metrics-title">
-          <div class="section-heading">
-            <h2 id="dashboard-metrics-title">Core Metrics</h2>
-            <div class="section-meta">Server pulse</div>
-          </div>
-
-          <div class="metrics-grid">
-            <article class="metric-card">
+            <article class="attention-card">
+              <div class="overview-label">Overall Platform Status</div>
               <div>
-                <div class="metric-top">
-                  <div class="metric-label">CPU</div>
-                  <div class="metric-icon"><svg class="icon"><use href="#icon-cpu"></use></svg></div>
-                </div>
-                <div class="metric-value" data-metric-value="cpu">-</div>
+                <div class="attention-value" id="dashboard-overall-status">Checking</div>
+                <div class="attention-note" id="dashboard-overall-note">Waiting for live telemetry.</div>
               </div>
-              <div class="progress" aria-label="CPU usage"><div class="progress-fill" data-progress="cpu"></div></div>
             </article>
 
-            <article class="metric-card">
+            <article class="attention-card">
+              <div class="overview-label">Open Alerts</div>
               <div>
-                <div class="metric-top">
-                  <div class="metric-label">RAM</div>
-                  <div class="metric-icon"><svg class="icon"><use href="#icon-memory"></use></svg></div>
-                </div>
-                <div class="metric-value" data-metric-value="memory">-</div>
-              </div>
-              <div class="progress" aria-label="RAM usage"><div class="progress-fill" data-progress="memory"></div></div>
-            </article>
-
-            <article class="metric-card">
-              <div>
-                <div class="metric-top">
-                  <div class="metric-label">Disk</div>
-                  <div class="metric-icon"><svg class="icon"><use href="#icon-disk"></use></svg></div>
-                </div>
-                <div class="metric-value" data-metric-value="disk">-</div>
-              </div>
-              <div class="progress" aria-label="Disk usage"><div class="progress-fill" data-progress="disk"></div></div>
-            </article>
-
-            <article class="metric-card">
-              <div>
-                <div class="metric-top">
-                  <div class="metric-label">Temperature</div>
-                  <div class="metric-icon"><svg class="icon"><use href="#icon-temp"></use></svg></div>
-                </div>
-                <div class="metric-value" data-metric-value="temperature">-</div>
-                <div class="metric-note">Thermal sensor</div>
+                <div class="attention-value" id="dashboard-alert-count">0</div>
+                <div class="attention-note" id="dashboard-alert-summary">No alerts detected.</div>
               </div>
             </article>
           </div>
         </section>
 
-        <section class="section" aria-labelledby="dashboard-services-title">
+        <section class="section" aria-labelledby="dashboard-alerts-title">
           <div class="section-heading">
-            <h2 id="dashboard-services-title">Services</h2>
-            <div class="section-meta">Runtime status</div>
+            <h2 id="dashboard-alerts-title">Alerts</h2>
+            <div class="section-meta">Critical and warning signals</div>
           </div>
-          <div class="services-grid" data-services-grid></div>
-        </section>
-
-        <section class="section" aria-labelledby="apps-title">
-          <div class="section-heading">
-            <h2 id="apps-title">Platform Apps</h2>
-            <div class="section-meta">Public surface</div>
-          </div>
-
-          <div class="apps-grid">
-            <article class="app-card" data-app="website">
-              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-globe"></use></svg></div><div><div class="app-name">Website</div><div class="app-domain">beniconsulting.se</div></div></div>
-              <div class="status-pill" data-app-status="website"><span class="dot"></span><span>Online</span></div>
-            </article>
-            <article class="app-card" data-app="status">
-              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-shield"></use></svg></div><div><div class="app-name">Status</div><div class="app-domain">status.beniconsulting.se</div></div></div>
-              <div class="status-pill" data-app-status="status"><span class="dot"></span><span>Online</span></div>
-            </article>
-            <article class="app-card" data-app="golfbot">
-              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-golf"></use></svg></div><div><div class="app-name">GolfBot</div><div class="app-domain">golf.beniconsulting.se</div></div></div>
-              <div class="status-pill" data-app-status="golfbot"><span class="dot"></span><span>Online</span></div>
-            </article>
-            <article class="app-card planned" data-app="api">
-              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-server"></use></svg></div><div><div class="app-name">API</div><div class="app-domain">api.beniconsulting.se</div></div></div>
-              <div class="status-pill planned" data-app-status="api"><span class="dot"></span><span>Planned</span></div>
-            </article>
-          </div>
-        </section>
-
-        <section class="section" aria-labelledby="trust-title">
-          <div class="section-heading">
-            <h2 id="trust-title">Trust & Deploy</h2>
-            <div class="section-meta">Certificates and revisions</div>
-          </div>
-
-          <div class="apps-grid">
-            <article class="app-card">
-              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-shield"></use></svg></div><div><div class="app-name">beniconsulting.se</div><div class="app-domain">Certificate</div></div></div>
-              <div class="status-pill unknown" data-cert-status="beniconsulting.se"><span class="dot"></span><span>Unknown</span></div>
-            </article>
-            <article class="app-card">
-              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-shield"></use></svg></div><div><div class="app-name">status.beniconsulting.se</div><div class="app-domain">Certificate</div></div></div>
-              <div class="status-pill unknown" data-cert-status="status.beniconsulting.se"><span class="dot"></span><span>Unknown</span></div>
-            </article>
-            <article class="app-card">
-              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-shield"></use></svg></div><div><div class="app-name">golf.beniconsulting.se</div><div class="app-domain">Certificate</div></div></div>
-              <div class="status-pill unknown" data-cert-status="golf.beniconsulting.se"><span class="dot"></span><span>Unknown</span></div>
-            </article>
-            <article class="app-card">
-              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-logs"></use></svg></div><div><div class="app-name">Website Repository</div><div class="app-domain" id="website-git-branch">branch unknown</div></div></div>
-              <div class="app-meta"><span id="website-git-commit">commit unknown</span><span id="website-git-updated">updated unknown</span></div>
-            </article>
-            <article class="app-card">
-              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-logs"></use></svg></div><div><div class="app-name">Status Repository</div><div class="app-domain" id="status-git-branch">branch unknown</div></div></div>
-              <div class="app-meta"><span id="status-git-commit">commit unknown</span><span id="status-git-updated">updated unknown</span></div>
-            </article>
-          </div>
+          <div class="alerts-list" id="dashboard-alerts"></div>
         </section>
 
         <section class="section" aria-labelledby="activity-title">
           <div class="activity-card">
             <div class="section-heading">
-              <h2 id="activity-title">Activity Feed</h2>
-              <div class="section-meta">Latest events</div>
+              <h2 id="activity-title">GolfBot Activity</h2>
+              <div class="section-meta">Latest 5 log entries</div>
             </div>
-            <div class="feed-list">
-              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Website deploy completed</div><div class="feed-time">just now</div></div>
-              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Caddy certificate active</div><div class="feed-time">active</div></div>
-              <div class="feed-item"><div class="feed-title"><span class="dot"></span>MinGolfBot online</div><div class="feed-time">online</div></div>
-              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Fail2Ban active</div><div class="feed-time">active</div></div>
-            </div>
+            <div class="feed-list" id="dashboard-golfbot-activity"></div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="quick-links-title">
+          <div class="section-heading">
+            <h2 id="quick-links-title">Quick Links</h2>
+            <div class="section-meta">Drill down</div>
+          </div>
+
+          <div class="quick-links-grid">
+            <button class="link-card" type="button" data-dashboard-link="infrastructure">
+              <div class="link-title"><svg class="icon"><use href="#icon-server"></use></svg>Infrastructure</div>
+              <div class="link-copy">Inspect host details, resource telemetry, services, certificates and deployment metadata.</div>
+            </button>
+            <button class="link-card" type="button" data-dashboard-link="golfbot">
+              <div class="link-title"><svg class="icon"><use href="#icon-golf"></use></svg>GolfBot</div>
+              <div class="link-copy">View watches, tee time search timing, Telegram state and runtime logs.</div>
+            </button>
           </div>
         </section>
       </section>
@@ -1417,6 +1430,8 @@
       golfBotStatusMeta: document.getElementById("golfbot-status-meta"),
       golfBotWatches: document.getElementById("golfbot-watches"),
       golfBotLogs: document.getElementById("golfbot-logs"),
+      dashboardAlerts: document.getElementById("dashboard-alerts"),
+      dashboardGolfBotActivity: document.getElementById("dashboard-golfbot-activity"),
       liveClock: document.getElementById("live-clock")
     };
 
@@ -1485,6 +1500,11 @@
 
       const [used, total] = String(value || "").split("/").map(parseStorageValue);
       return used && total ? (used / total) * 100 : 0;
+    };
+
+    const parseTemperature = (value) => {
+      const match = String(value || "").match(/(-?\d+(?:[.,]\d+)?)/);
+      return match ? Number(match[1].replace(",", ".")) : 0;
     };
 
     const formatPercentValue = (value) => {
@@ -1623,6 +1643,98 @@
       return [];
     };
 
+    const buildDashboardAlerts = (data) => {
+      const services = data.services || {};
+      const alerts = SERVICE_MAP
+        .filter((service) => services[service.key] && services[service.key] !== "active")
+        .map((service) => ({
+          severity: "critical",
+          title: `${service.label} is offline`,
+          copy: "Service is not reporting an active systemd state."
+        }));
+
+      const temperature = parseTemperature(data.temperature);
+      if (temperature >= 75) {
+        alerts.push({
+          severity: "warning",
+          title: "High temperature",
+          copy: `Current sensor reading is ${data.temperature}.`
+        });
+      }
+
+      const diskUsage = parseUsageRatio(data.disk);
+      if (diskUsage >= 80) {
+        alerts.push({
+          severity: "warning",
+          title: "High disk usage",
+          copy: `Disk usage is at ${Math.round(diskUsage)}%.`
+        });
+      }
+
+      return alerts;
+    };
+
+    const renderDashboardAlerts = (alerts) => {
+      const criticalCount = alerts.filter((alert) => alert.severity === "critical").length;
+      const warningCount = alerts.filter((alert) => alert.severity === "warning").length;
+
+      setText("dashboard-alert-count", String(alerts.length));
+      setText("dashboard-overall-status", criticalCount ? "Attention needed" : warningCount ? "Warnings active" : "All clear");
+      setText("dashboard-overall-note", criticalCount
+        ? `${criticalCount} critical alert${criticalCount === 1 ? "" : "s"} needs attention.`
+        : warningCount
+          ? `${warningCount} warning${warningCount === 1 ? "" : "s"} should be reviewed.`
+          : "No critical or warning signals detected.");
+      setText("dashboard-alert-summary", alerts.length
+        ? `${criticalCount} critical, ${warningCount} warning`
+        : "No alerts detected.");
+
+      if (!alerts.length) {
+        elements.dashboardAlerts.innerHTML = `
+          <article class="alert-card">
+            <div class="alert-main">
+              <div class="alert-title">No issues require attention</div>
+              <div class="alert-copy">Services are online and thresholds are within the expected range.</div>
+            </div>
+            <div class="status-pill"><span class="dot"></span><span>OK</span></div>
+          </article>
+        `;
+        return;
+      }
+
+      elements.dashboardAlerts.innerHTML = alerts.map((alert) => `
+        <article class="alert-card ${alert.severity}">
+          <div class="alert-main">
+            <div class="alert-title">${escapeHtml(alert.title)}</div>
+            <div class="alert-copy">${escapeHtml(alert.copy)}</div>
+          </div>
+          <div class="status-pill ${alert.severity === "critical" ? "degraded" : "planned"}">
+            <span class="dot"></span><span>${alert.severity === "critical" ? "Critical" : "Warning"}</span>
+          </div>
+        </article>
+      `).join("");
+    };
+
+    const renderDashboardGolfBotActivity = (logs) => {
+      const latestLogs = logs.slice(0, 5);
+      if (!latestLogs.length) {
+        elements.dashboardGolfBotActivity.innerHTML = `
+          <div class="feed-item">
+            <div class="feed-title"><span class="dot"></span>No GolfBot activity available</div>
+            <div class="feed-time">waiting</div>
+          </div>
+        `;
+        return;
+      }
+
+      elements.dashboardGolfBotActivity.innerHTML = latestLogs.map((line) => `
+        <div class="feed-item">
+          <div class="feed-title"><span class="dot"></span>${escapeHtml(line)}</div>
+          <div class="feed-time">GolfBot</div>
+        </div>
+      `).join("");
+    };
+
     const renderServiceCards = () => {
       document.querySelectorAll("[data-services-grid]").forEach((grid) => {
         grid.innerHTML = SERVICE_MAP.map((service) => `
@@ -1737,6 +1849,7 @@
       }, 0);
 
       setSystemStatus(onlineCount);
+      renderDashboardAlerts(buildDashboardAlerts(data));
       setAppStatus("website", services.beniWebsite === "active" ? "Online" : "Offline");
       setAppStatus("status", services.caddy === "active" ? "Online" : "Offline");
       setAppStatus("golfbot", services.mingolfbot === "active" ? "Online" : "Offline");
@@ -1848,6 +1961,7 @@
 
       renderGolfBotWatches(watches);
       renderGolfBotLogs(logs);
+      renderDashboardGolfBotActivity(logs);
     };
 
     const renderGolfBotUnavailable = () => {
@@ -1857,6 +1971,7 @@
       setTone(elements.golfBotStatusPill, "unknown");
       elements.golfBotStatusText.textContent = "Unknown";
       setText("golfbot-status-meta", "GolfBot data unavailable");
+      renderDashboardGolfBotActivity([]);
     };
 
     const setPage = (pageId) => {
@@ -1908,6 +2023,10 @@
 
     document.querySelectorAll("[data-page-target]").forEach((link) => {
       link.addEventListener("click", () => setPage(link.dataset.pageTarget));
+    });
+
+    document.querySelectorAll("[data-dashboard-link]").forEach((link) => {
+      link.addEventListener("click", () => setPage(link.dataset.dashboardLink));
     });
 
     updateClock();
