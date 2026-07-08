@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sv">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -219,10 +219,18 @@
       background: var(--red-soft);
     }
 
-    .status-pill.planned {
+    .status-pill.planned,
+    .mission-chip.planned {
       border-color: rgba(234, 179, 8, .26);
       color: #fff3c4;
       background: var(--yellow-soft);
+    }
+
+    .status-pill.unknown,
+    .mission-chip.unknown {
+      border-color: rgba(255, 255, 255, .14);
+      color: #d4d4d8;
+      background: rgba(255, 255, 255, .055);
     }
 
     .dot {
@@ -241,9 +249,16 @@
       box-shadow: 0 0 20px rgba(239, 68, 68, .8);
     }
 
-    .status-pill.planned .dot {
+    .status-pill.planned .dot,
+    .mission-chip.planned .dot {
       background: var(--yellow);
       box-shadow: 0 0 20px rgba(234, 179, 8, .6);
+    }
+
+    .status-pill.unknown .dot,
+    .mission-chip.unknown .dot {
+      background: var(--muted-2);
+      box-shadow: 0 0 18px rgba(161, 161, 170, .35);
     }
 
     .page-header {
@@ -545,6 +560,16 @@
       overflow-wrap: anywhere;
     }
 
+    .app-meta {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
     .activity-card {
       padding: 20px;
     }
@@ -822,7 +847,7 @@
   </svg>
 
   <div class="shell">
-    <aside class="sidebar" aria-label="Huvudmeny">
+    <aside class="sidebar" aria-label="Main navigation">
       <div class="brand">
         <div class="brand-mark">BP</div>
         <div class="brand-title">BENI PLATFORM</div>
@@ -845,12 +870,12 @@
     </aside>
 
     <main class="main">
-      <div class="mission-bar" aria-label="Statusrad">
+      <div class="mission-bar" aria-label="Status bar">
         <div class="mission-chip" id="services-count-chip"><span class="dot"></span><span id="services-count">0 services online</span></div>
         <div class="mission-chip"><span class="dot"></span>HTTPS</div>
         <div class="mission-chip"><span class="dot"></span>DNS</div>
-        <div class="mission-chip"><span class="dot"></span>Certifikat</div>
-        <div class="mission-chip"><span class="dot"></span>Git synced</div>
+        <div class="mission-chip" id="certificate-chip"><span class="dot"></span><span id="certificate-summary">Certificates unknown</span></div>
+        <div class="mission-chip" id="git-chip"><span class="dot"></span><span id="git-summary">Git unknown</span></div>
       </div>
 
       <header class="page-header">
@@ -863,10 +888,10 @@
         <div class="header-status">
           <div class="system-pill" id="system-status">
             <span class="dot"></span>
-            <span id="system-status-text">Kontrollerar system</span>
+            <span id="system-status-text">Checking systems</span>
           </div>
           <div class="live-clock" id="live-clock">--:--:--</div>
-          <div class="updated" id="updated">Senast uppdaterad -</div>
+          <div class="updated" id="updated">Last updated -</div>
         </div>
       </header>
 
@@ -879,20 +904,36 @@
 
           <div class="overview-grid">
             <article class="overview-card">
-              <div class="overview-label">Systemstatus</div>
-              <div class="overview-value" id="health-status">Kontrollerar</div>
+              <div class="overview-label">System Status</div>
+              <div class="overview-value" id="health-status">Checking</div>
             </article>
             <article class="overview-card">
-              <div class="overview-label">Aktiva tjänster</div>
+              <div class="overview-label">Active Services</div>
               <div class="overview-value" id="active-services">0 / 4</div>
             </article>
             <article class="overview-card">
-              <div class="overview-label">Senast uppdaterad</div>
+              <div class="overview-label">Last Updated</div>
               <div class="overview-value" id="health-updated">-</div>
             </article>
             <article class="overview-card">
               <div class="overview-label">Uptime</div>
               <div class="overview-value" id="health-uptime">-</div>
+            </article>
+            <article class="overview-card">
+              <div class="overview-label">Certificates</div>
+              <div class="overview-value" id="health-certificates">-</div>
+            </article>
+            <article class="overview-card">
+              <div class="overview-label">Website Git</div>
+              <div class="overview-value" id="health-website-git">-</div>
+            </article>
+            <article class="overview-card">
+              <div class="overview-label">Status Page Git</div>
+              <div class="overview-value" id="health-status-git">-</div>
+            </article>
+            <article class="overview-card">
+              <div class="overview-label">Public IP</div>
+              <div class="overview-value" id="health-public-ip">-</div>
             </article>
           </div>
         </section>
@@ -912,7 +953,7 @@
                 </div>
                 <div class="metric-value" data-metric-value="cpu">-</div>
               </div>
-              <div class="progress" aria-label="CPU-användning"><div class="progress-fill" data-progress="cpu"></div></div>
+              <div class="progress" aria-label="CPU usage"><div class="progress-fill" data-progress="cpu"></div></div>
             </article>
 
             <article class="metric-card">
@@ -923,7 +964,7 @@
                 </div>
                 <div class="metric-value" data-metric-value="memory">-</div>
               </div>
-              <div class="progress" aria-label="RAM-användning"><div class="progress-fill" data-progress="memory"></div></div>
+              <div class="progress" aria-label="RAM usage"><div class="progress-fill" data-progress="memory"></div></div>
             </article>
 
             <article class="metric-card">
@@ -934,13 +975,13 @@
                 </div>
                 <div class="metric-value" data-metric-value="disk">-</div>
               </div>
-              <div class="progress" aria-label="Diskanvändning"><div class="progress-fill" data-progress="disk"></div></div>
+              <div class="progress" aria-label="Disk usage"><div class="progress-fill" data-progress="disk"></div></div>
             </article>
 
             <article class="metric-card">
               <div>
                 <div class="metric-top">
-                  <div class="metric-label">Temperatur</div>
+                  <div class="metric-label">Temperature</div>
                   <div class="metric-icon"><svg class="icon"><use href="#icon-temp"></use></svg></div>
                 </div>
                 <div class="metric-value" data-metric-value="temperature">-</div>
@@ -979,7 +1020,37 @@
             </article>
             <article class="app-card planned" data-app="api">
               <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-server"></use></svg></div><div><div class="app-name">API</div><div class="app-domain">api.beniconsulting.se</div></div></div>
-              <div class="status-pill planned" data-app-status="api"><span class="dot"></span><span>Planerad</span></div>
+              <div class="status-pill planned" data-app-status="api"><span class="dot"></span><span>Planned</span></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="trust-title">
+          <div class="section-heading">
+            <h2 id="trust-title">Trust & Deploy</h2>
+            <div class="section-meta">Certificates and revisions</div>
+          </div>
+
+          <div class="apps-grid">
+            <article class="app-card">
+              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-shield"></use></svg></div><div><div class="app-name">beniconsulting.se</div><div class="app-domain">Certificate</div></div></div>
+              <div class="status-pill unknown" data-cert-status="beniconsulting.se"><span class="dot"></span><span>Unknown</span></div>
+            </article>
+            <article class="app-card">
+              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-shield"></use></svg></div><div><div class="app-name">status.beniconsulting.se</div><div class="app-domain">Certificate</div></div></div>
+              <div class="status-pill unknown" data-cert-status="status.beniconsulting.se"><span class="dot"></span><span>Unknown</span></div>
+            </article>
+            <article class="app-card">
+              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-shield"></use></svg></div><div><div class="app-name">golf.beniconsulting.se</div><div class="app-domain">Certificate</div></div></div>
+              <div class="status-pill unknown" data-cert-status="golf.beniconsulting.se"><span class="dot"></span><span>Unknown</span></div>
+            </article>
+            <article class="app-card">
+              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-logs"></use></svg></div><div><div class="app-name">Website Repository</div><div class="app-domain" id="website-git-branch">branch unknown</div></div></div>
+              <div class="app-meta"><span id="website-git-commit">commit unknown</span><span id="website-git-updated">updated unknown</span></div>
+            </article>
+            <article class="app-card">
+              <div class="app-top"><div class="app-icon"><svg class="icon"><use href="#icon-logs"></use></svg></div><div><div class="app-name">Status Repository</div><div class="app-domain" id="status-git-branch">branch unknown</div></div></div>
+              <div class="app-meta"><span id="status-git-commit">commit unknown</span><span id="status-git-updated">updated unknown</span></div>
             </article>
           </div>
         </section>
@@ -991,10 +1062,10 @@
               <div class="section-meta">Latest events</div>
             </div>
             <div class="feed-list">
-              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Website deploy körd</div><div class="feed-time">nyss</div></div>
-              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Caddy certifikat aktivt</div><div class="feed-time">aktivt</div></div>
+              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Website deploy completed</div><div class="feed-time">just now</div></div>
+              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Caddy certificate active</div><div class="feed-time">active</div></div>
               <div class="feed-item"><div class="feed-title"><span class="dot"></span>MinGolfBot online</div><div class="feed-time">online</div></div>
-              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Fail2Ban aktivt</div><div class="feed-time">aktivt</div></div>
+              <div class="feed-item"><div class="feed-title"><span class="dot"></span>Fail2Ban active</div><div class="feed-time">active</div></div>
             </div>
           </div>
         </section>
@@ -1010,8 +1081,10 @@
           <div class="infra-grid">
             <div class="server-panel">
               <div class="server-detail"><div class="detail-label">Hostname</div><div class="detail-value" id="hostname">-</div></div>
-              <div class="server-detail"><div class="detail-label">Lokal IP</div><div class="detail-value" id="local-ip">-</div></div>
-              <div class="server-detail"><div class="detail-label">Ubuntu-version</div><div class="detail-value" id="os-version">26.04</div></div>
+              <div class="server-detail"><div class="detail-label">Local IP</div><div class="detail-value" id="local-ip">-</div></div>
+              <div class="server-detail"><div class="detail-label">Public IP</div><div class="detail-value" id="public-ip">-</div></div>
+              <div class="server-detail"><div class="detail-label">Ubuntu Version</div><div class="detail-value" id="os-version">26.04</div></div>
+              <div class="server-detail"><div class="detail-label">Kernel</div><div class="detail-value" id="kernel-version">-</div></div>
               <div class="server-detail"><div class="detail-label">Uptime</div><div class="detail-value" id="server-uptime">-</div></div>
             </div>
 
@@ -1039,7 +1112,7 @@
             <article class="metric-card"><div><div class="metric-top"><div class="metric-label">CPU</div><div class="metric-icon"><svg class="icon"><use href="#icon-cpu"></use></svg></div></div><div class="metric-value" data-metric-value="cpu">-</div></div><div class="progress"><div class="progress-fill" data-progress="cpu"></div></div></article>
             <article class="metric-card"><div><div class="metric-top"><div class="metric-label">RAM</div><div class="metric-icon"><svg class="icon"><use href="#icon-memory"></use></svg></div></div><div class="metric-value" data-metric-value="memory">-</div></div><div class="progress"><div class="progress-fill" data-progress="memory"></div></div></article>
             <article class="metric-card"><div><div class="metric-top"><div class="metric-label">Disk</div><div class="metric-icon"><svg class="icon"><use href="#icon-disk"></use></svg></div></div><div class="metric-value" data-metric-value="disk">-</div></div><div class="progress"><div class="progress-fill" data-progress="disk"></div></div></article>
-            <article class="metric-card"><div><div class="metric-top"><div class="metric-label">Temperatur</div><div class="metric-icon"><svg class="icon"><use href="#icon-temp"></use></svg></div></div><div class="metric-value" data-metric-value="temperature">-</div><div class="metric-note">Thermal sensor</div></div></article>
+            <article class="metric-card"><div><div class="metric-top"><div class="metric-label">Temperature</div><div class="metric-icon"><svg class="icon"><use href="#icon-temp"></use></svg></div></div><div class="metric-value" data-metric-value="temperature">-</div><div class="metric-note">Thermal sensor</div></div></article>
           </div>
         </section>
 
@@ -1049,6 +1122,30 @@
             <div class="section-meta">Systemd state</div>
           </div>
           <div class="services-grid" data-services-grid></div>
+        </section>
+
+        <section class="section" aria-labelledby="infra-trust-title">
+          <div class="section-heading">
+            <h2 id="infra-trust-title">Certificates & Git</h2>
+            <div class="section-meta">Deployment metadata</div>
+          </div>
+
+          <div class="infra-grid">
+            <div class="server-panel">
+              <div class="server-detail"><div class="detail-label">beniconsulting.se</div><div class="detail-value" id="cert-beni">-</div></div>
+              <div class="server-detail"><div class="detail-label">status.beniconsulting.se</div><div class="detail-value" id="cert-status">-</div></div>
+              <div class="server-detail"><div class="detail-label">golf.beniconsulting.se</div><div class="detail-value" id="cert-golf">-</div></div>
+            </div>
+
+            <div class="server-panel">
+              <div class="server-detail"><div class="detail-label">Website Branch</div><div class="detail-value" id="infra-website-branch">-</div></div>
+              <div class="server-detail"><div class="detail-label">Website Commit</div><div class="detail-value" id="infra-website-commit">-</div></div>
+              <div class="server-detail"><div class="detail-label">Website Updated</div><div class="detail-value" id="infra-website-updated">-</div></div>
+              <div class="server-detail"><div class="detail-label">Status Branch</div><div class="detail-value" id="infra-status-branch">-</div></div>
+              <div class="server-detail"><div class="detail-label">Status Commit</div><div class="detail-value" id="infra-status-commit">-</div></div>
+              <div class="server-detail"><div class="detail-label">Status Updated</div><div class="detail-value" id="infra-status-updated">-</div></div>
+            </div>
+          </div>
         </section>
       </section>
 
@@ -1084,6 +1181,8 @@
       systemStatus: document.getElementById("system-status"),
       systemStatusText: document.getElementById("system-status-text"),
       servicesCountChip: document.getElementById("services-count-chip"),
+      certificateChip: document.getElementById("certificate-chip"),
+      gitChip: document.getElementById("git-chip"),
       liveClock: document.getElementById("live-clock")
     };
 
@@ -1151,11 +1250,45 @@
 
     const formatPercentValue = (value) => {
       const percent = parsePercent(value);
-      return percent ? `${percent.toLocaleString("sv-SE")} %` : value;
+      return percent ? `${percent.toLocaleString("en-GB")} %` : value;
+    };
+
+    const getValue = (value) => {
+      return value || "unknown";
+    };
+
+    const getPublicIp = (data) => {
+      return data.publicIp || data.publicIP || data.public_ip || "unknown";
     };
 
     const getOsVersion = (data) => {
-      return data.osVersion || data.os || "26.04";
+      return data.ubuntuVersion || data.osVersion || data.os || "unknown";
+    };
+
+    const formatGitSummary = (git) => {
+      if (!git || !git.branch || !git.commit || git.branch === "unknown" || git.commit === "unknown") {
+        return "unknown";
+      }
+
+      return `${git.branch} / ${git.commit}`;
+    };
+
+    const formatGitUpdated = (value) => {
+      return value && value !== "unknown" ? formatUpdated(value) : "updated unknown";
+    };
+
+    const normalizeCertificateStatus = (value) => {
+      const status = String(value || "unknown").toLowerCase();
+      if (status === "valid") return { label: "Valid", tone: "online" };
+      if (status === "expiring") return { label: "Expiring", tone: "planned" };
+      if (status === "expired") return { label: "Expired", tone: "degraded" };
+      return { label: "Unknown", tone: "unknown" };
+    };
+
+    const setTone = (element, tone) => {
+      element.classList.toggle("planned", tone === "planned");
+      element.classList.toggle("degraded", tone === "degraded");
+      element.classList.toggle("unknown", tone === "unknown");
     };
 
     const renderServiceCards = () => {
@@ -1189,17 +1322,27 @@
 
     const setAppStatus = (id, status) => {
       document.querySelectorAll(`[data-app-status="${id}"]`).forEach((pill) => {
-        const isPlanned = status === "Planerad";
+        const isPlanned = status === "Planned";
         const isOnline = status === "Online";
         pill.classList.toggle("planned", isPlanned);
         pill.classList.toggle("degraded", !isOnline && !isPlanned);
+        pill.classList.toggle("unknown", false);
         pill.querySelector("span:last-child").textContent = status;
       });
     };
 
+    const setCertificateStatus = (domain, value) => {
+      const certificate = normalizeCertificateStatus(value);
+      document.querySelectorAll(`[data-cert-status="${domain}"]`).forEach((pill) => {
+        setTone(pill, certificate.tone);
+        pill.querySelector("span:last-child").textContent = certificate.label;
+      });
+      return certificate;
+    };
+
     const setSystemStatus = (onlineCount) => {
       const allOnline = onlineCount === SERVICE_MAP.length;
-      const statusText = allOnline ? "Alla system online" : "Åtgärd krävs";
+      const statusText = allOnline ? "All systems online" : "Action required";
 
       elements.systemStatus.classList.toggle("degraded", !allOnline);
       elements.servicesCountChip.classList.toggle("degraded", !allOnline);
@@ -1212,19 +1355,40 @@
 
     const formatUpdated = (value) => {
       const updatedAt = value ? new Date(value) : new Date();
-      return updatedAt.toLocaleString("sv-SE");
+      return updatedAt.toLocaleString("en-GB");
     };
 
     const renderStatus = (data) => {
       const updated = formatUpdated(data.updatedAt);
+      const websiteGit = data.websiteGit || {};
+      const statusGit = data.statusGit || {};
+      const certificates = data.certificates || {};
+      const publicIp = getPublicIp(data);
 
       setText("hostname", data.hostname);
       setText("local-ip", data.ip);
+      setText("public-ip", publicIp);
+      setText("health-public-ip", publicIp);
+      setText("kernel-version", getValue(data.kernel));
       setText("server-uptime", data.uptime);
       setText("health-uptime", data.uptime);
       setText("os-version", getOsVersion(data));
-      setText("updated", `Senast uppdaterad ${updated}`);
+      setText("updated", `Last updated ${updated}`);
       setText("health-updated", updated);
+      setText("health-website-git", formatGitSummary(websiteGit));
+      setText("health-status-git", formatGitSummary(statusGit));
+      setText("website-git-branch", `branch ${getValue(websiteGit.branch)}`);
+      setText("website-git-commit", `commit ${getValue(websiteGit.commit)}`);
+      setText("website-git-updated", formatGitUpdated(websiteGit.updated));
+      setText("status-git-branch", `branch ${getValue(statusGit.branch)}`);
+      setText("status-git-commit", `commit ${getValue(statusGit.commit)}`);
+      setText("status-git-updated", formatGitUpdated(statusGit.updated));
+      setText("infra-website-branch", getValue(websiteGit.branch));
+      setText("infra-website-commit", getValue(websiteGit.commit));
+      setText("infra-website-updated", formatGitUpdated(websiteGit.updated));
+      setText("infra-status-branch", getValue(statusGit.branch));
+      setText("infra-status-commit", getValue(statusGit.commit));
+      setText("infra-status-updated", formatGitUpdated(statusGit.updated));
 
       setTextAll('[data-metric-value="cpu"]', formatPercentValue(data.cpu));
       setTextAll('[data-metric-value="memory"]', data.memory);
@@ -1244,7 +1408,32 @@
       setAppStatus("website", services.beniWebsite === "active" ? "Online" : "Offline");
       setAppStatus("status", services.caddy === "active" ? "Online" : "Offline");
       setAppStatus("golfbot", services.mingolfbot === "active" ? "Online" : "Offline");
-      setAppStatus("api", "Planerad");
+      setAppStatus("api", "Planned");
+
+      const certificateResults = [
+        setCertificateStatus("beniconsulting.se", certificates["beniconsulting.se"]),
+        setCertificateStatus("status.beniconsulting.se", certificates["status.beniconsulting.se"]),
+        setCertificateStatus("golf.beniconsulting.se", certificates["golf.beniconsulting.se"])
+      ];
+      const validCertificateCount = certificateResults.filter((certificate) => certificate.tone === "online").length;
+      const allCertificatesKnown = certificateResults.every((certificate) => certificate.tone !== "unknown");
+      const allCertificatesHealthy = certificateResults.every((certificate) => certificate.tone === "online");
+      const certificateSummary = allCertificatesHealthy
+        ? "Certificates valid"
+        : `${validCertificateCount} / ${certificateResults.length} certificates valid`;
+      const certificateTone = allCertificatesHealthy ? "online" : allCertificatesKnown ? "planned" : "unknown";
+
+      setTone(elements.certificateChip, certificateTone);
+      setText("certificate-summary", certificateSummary);
+      setText("health-certificates", certificateSummary);
+      setText("cert-beni", certificateResults[0].label);
+      setText("cert-status", certificateResults[1].label);
+      setText("cert-golf", certificateResults[2].label);
+
+      const gitKnown = [websiteGit.branch, websiteGit.commit, statusGit.branch, statusGit.commit]
+        .every((value) => value && value !== "unknown");
+      setTone(elements.gitChip, gitKnown ? "online" : "unknown");
+      setText("git-summary", gitKnown ? "Git metadata synced" : "Git metadata unknown");
     };
 
     const setPage = (pageId) => {
@@ -1264,7 +1453,7 @@
     };
 
     const updateClock = () => {
-      elements.liveClock.textContent = new Date().toLocaleTimeString("sv-SE");
+      elements.liveClock.textContent = new Date().toLocaleTimeString("en-GB");
     };
 
     async function loadStatus() {
@@ -1274,7 +1463,7 @@
         renderStatus(data);
       } catch (error) {
         setSystemStatus(0);
-        setText("updated", "Senast uppdaterad -");
+        setText("updated", "Last updated -");
         setText("health-updated", "-");
       }
     }
