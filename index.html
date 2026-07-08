@@ -1341,6 +1341,7 @@
             <article class="overview-card"><div class="overview-label">Next Search</div><div class="overview-value" id="golfbot-next-search">-</div></article>
             <article class="overview-card"><div class="overview-label">Telegram Status</div><div class="overview-value" id="golfbot-telegram-status">-</div></article>
             <article class="overview-card"><div class="overview-label">Matches Today</div><div class="overview-value" id="golfbot-matches-today">-</div></article>
+            <article class="overview-card"><div class="overview-label">Searches Today</div><div class="overview-value" id="golfbot-searches-today">-</div></article>
             <article class="overview-card"><div class="overview-label">Notifications Today</div><div class="overview-value" id="golfbot-notifications-today">-</div></article>
           </div>
         </section>
@@ -1842,6 +1843,7 @@
         : formatMaybeDateTime(data.nextSearch));
       setText("golfbot-telegram-status", telegramStatus);
       setText("golfbot-matches-today", String(data.matchesToday ?? "unknown"));
+      setText("golfbot-searches-today", String(data.searchesToday ?? 0));
       setText("golfbot-notifications-today", String(data.notificationsToday ?? "unknown"));
 
       renderGolfBotWatches(watches);

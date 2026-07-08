@@ -1,25 +1,16 @@
 {
   "status": "running",
-  "activeWatches": 1,
+  "activeWatches": 0,
   "searchIntervalMinutes": 2,
-  "lastSearch": "2026-07-08T10:15:00+02:00",
-  "nextSearchInSeconds": 84,
+  "lastSearch": null,
+  "nextSearchInSeconds": null,
   "matchesToday": 0,
   "notificationsToday": 0,
   "telegram": "online",
-  "watches": [
-    {
-      "club": "Österåkers Golfklubb",
-      "course": "East Course",
-      "date": "2026-07-12",
-      "timeWindow": "07:00–09:00",
-      "players": 4,
-      "status": "active"
-    }
-  ],
+  "watches": [],
   "logs": [
-    "10:15 Searching Österåkers Golfklubb East Course",
-    "10:15 No matching tee times found",
-    "10:13 Watch active"
-  ]
+    "13:59 GolfBot started"
+  ],
+  "updatedAt": "2026-07-08T11:59:45.372Z",
+  "searchesToday": 0
 }
